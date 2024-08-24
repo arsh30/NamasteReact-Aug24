@@ -1,0 +1,165 @@
+Q) What is React?
+S) React is JS library developed by FB, it is used to build SPA. 
+
+Q) what is the Difference between Library and Framework?
+S) Library -> libaray is a collection of prewritten code that can be used for faster development.
+            - A Js Library code can be inject into any app code which leads for faster development, Example React can be inject into Plain HTML 
+
+
+  Framework - It provides a basic structure for a website. Example: Angular
+
+
+Q) Difference between library and Framework?
+S) When using a library, the control remains with the developer who tells the application when to call library funciton. which package do should we use
+  When using a Framework, the control is reversed, which means that the Framework tells the developer where the code needs to be provided and call it. 
+
+
+Q) Emmet?
+S) basically it gives you the boiler plate code for writing HTML and Css 
+
+---------------------- CREATE HELLO WORLD PROGRAM USING ONLY HTML ----------------------------------------
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Namaste React</title>
+  </head>
+  <body>
+    <div class="root">
+      <h1> Hello World </h1>
+    </div>
+  </body>
+</html>
+
+
+---------------------- NOW THE SAME ABOVE CODE, WE DOING WITH THE HELP OF JAVASCRIPT ----------------------------------------
+
+- Means h1 jo hai vo hum, Html se create kr rahe the H1 use krke, but now we are make our H1 with Javascript
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Namaste React</title>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script>
+      const h1 = document.createElement("h1");
+      h1.innerHTML = "Hello World from Javascript";
+
+      const root = document.getElementById("root");
+      root.appendChild(h1);
+    </script>
+  </body>
+</html>
+
+Note: document,createElement,innerHtml,appendChild -> the browser already have these, thats why we are able to use this.
+
+---------------------- NOW THE SAME ABOVE CODE, WE DOING WITH THE HELP OF REACT ----------------------------------------
+
+- Means h1 jo hai vo hum, Html se create kr rahe the H1 use krke, but now we are make our H1 with React 
+- So first thing, to use React, we have to include the CDN (Content delivery network), they are website where the code is hoisted 
+  and we are directly fetching that code into our project
+
+- CDN LINKS:
+  1. <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script> // It contains the React Code which is in Plain JS
+  2. <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script> // It is usefull for DOM Operation or use to modify the DOM. 
+
+  When we add the above 2 code, we have power to use React in our code.
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Namaste React</title>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <script>
+      const heading = React.createElement("h1",{},"Hello World from React");
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(heading)
+    </script>
+ 
+  </body>
+</html>
+
+
+NOTE:
+Q) What is Crossorigin?
+S) basically It enables Cross Origin Resource Sharing (CORS) for loading external JS files from different origin 
+   than the hosting webpage
+
+   Means allows the script to access the code from the server, where it is hoisted by making a Api call etc.
+
+
+2. createRoot - to inject the code into that root [mandatory to create this], 
+3. React.createElement(
+    "h1", // Element That we want to create
+    {}, // It contains the Attribute. Eg: id="title" , class="title", src, etc. // Eg: {id:'heading'}
+    "Hello World from React" // The Content that we want to show on the UI
+  );
+
+4. React.createElement basically gives you the JS Object
+  "const heading = React.createElement("h1",{},"Hello World from React");"
+   so when we console this heading, It gives the Javascript Object
+
+
+5. root.render(heading); // Its job is basically to Convert the object into h1 and put inside the root Element that we create
+
+
+---------------------- DO PRACTICE [HOW DO WE CREATE THE BELOW HTML STRUCTURE IN REACT USING CDN] ----------------------------------------
+
+
+    <div id="parent">
+      <div id="child1">
+        <h1>Heading 1</h1>
+        <h1>Heading 2</h1>
+      </div>
+
+      <div id="child2">
+        <h1>Heading 1</h1>
+        <h1>Heading 2</h1>
+      </div>
+    </div>
+
+
+SOL:
+
+const parent = React.createElement("div", { id: "parent" }, [ // This is a CORE React, Behind the scene React Aise convert hoti hai, So JSX Life Easy
+  React.createElement("div", { id: "child1" }, [ 
+    React.createElement("h1", {}, "child Heading 1"),
+    React.createElement("h2", {}, "child Heading 2"),
+  ]),
+  React.createElement("div", { id: "child2" }, [
+    React.createElement("h1", {}, "Child Heading 1"),
+    React.createElement("h2", {}, "Child Heading 2"),
+  ]),
+]);
+
+console.log(parent); // It is React Element [js object] => becomes HTML (Browser understands) => root.render (it convert the object to Html Element that browser runs)
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(parent); // Render basically convert the Javascript to Eleemnts that Browser Understands and Display on the UI
+
+
+Note: 
+1. jab multiple child honge, then we have to use Array [ ]; and iske andr child/siblings aayege
+2. Suppose html me 1 root hota hai, and uske andr suppose kuch content hai 
+  kya vo bhi Display hoga??
+
+  No. because jab hum ReactDOM.create krte hai and root.render() krte hai toh 
+  React will Overwrite Everything inside the  "root" and replaces with whatever given inside the 
+  render method
+
+-------------------------------- FINISH --------------------------------
