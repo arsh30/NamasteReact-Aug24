@@ -147,7 +147,7 @@ const parent = React.createElement("div", { id: "parent" }, [ // This is a CORE 
   ]),
 ]);
 
-console.log(parent); // It is React Element [js object] => becomes HTML (Browser understands) => root.render (it convert the object to Html Element that browser runs)
+console.log(parent); // IMPORTANT -->> It is React Element [js object] => becomes HTML (Browser understands) => root.render (it convert the object to Html Element that browser runs)
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(parent); // Render basically convert the Javascript to Eleemnts that Browser Understands and Display on the UI
