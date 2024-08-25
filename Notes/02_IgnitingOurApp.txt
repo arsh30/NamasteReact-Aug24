@@ -1,0 +1,167 @@
+When we do, npx create-react-app -> the code is already production ready, 
+currently when we do from only from HTML and inject react through CDN then this is not only enough thing for the production ready app 
+
+Q) To make our app production ready what should we do?
+S) Minify our file (optimization, Remove console logs and Bundle Things up)
+
+Q) what are Bundlers?
+S) A bundler is a tool that bundles our app, so that it can be pushed to production 
+
+  Ex: when we have HTML CSS JS file , our whole code should be bundled together (minified, cached, clean)
+  before send it to production
+
+  Examples of bundlers: Webpack, Vite, Parcel
+  Note: In create-react-app , the bundler used is Webpack, 
+  In our code, we will use parcel 
+
+----------------- CONFIGURATION --------------
+
+- npm is basically node package manager but it is not correct full form. It basically manages the packages
+  when we create a npx create react app , so it already have npm inside it.
+
+
+- npm init [run this command in terminal] // because to install the Bundler in our project and other dependencies
+      - test command: jest (used for testing)
+      - git repo: (jo bhi aayegi vo as it is)
+      - npm init create a package.json file in our project
+
+
+- Now install the bundler:  npm install -D parcel; 
+  Now we will get a package-lock.json file 
+
+------------------- PACKAGE.JSON | PACKAGE-LOCK.JSON | NODE MODULES ------------------------------------
+
+
+1. package.json ->  It is configuration for NPM. whatever packages our project needs, we install those packages 
+                    using: npm install <packageName>
+
+                - once package is complete, their name, version and configuration related information is stored as dependencies inside 
+                  package.json file
+
+
+2. package-lock.json -> It locks the exact version of packages that is being used in the project. 
+                      - It basically have the detailed Information in Heirarchy order like name, version, integrity of our package 
+
+
+
+Note: 1. Integrity: SHA-12 because some developers complains the code is running on the local but not on production. 
+         so package-lock.json maintains a Hash that uses the same version that is deployed on production
+
+      2. parcel:^2.8.3 => ^ (CARET) - when minor changes are released like 2.8.4 it automatically updates this version 
+                          ~ (Tilde) - when major chnages are release like 3.8.4 it automatically updates this version 
+
+                          Not put ~ this, because sometime this can break the app, because sometime app is not compatible with this 
+                          so always go with (^)
+
+
+      3. when we simply write 2.8.3 -> means no update is required
+
+      4. dependencies - means in production they are used
+      5. dev-dependencies - They are used for only development purpose 
+
+3. Node Modules -> It is like a Database for the npm, Every dependency in node_module will have its own package.json file 
+                -> It fetches all the code, of all the dependencies into our System 
+                -> Never push node_module to github because they are very heavy in Size, and  they can regenerate by running: npm install 
+  
+
+NOTE: Never Touch node_module and package-lock.json 
+      
+
+---------------------------- IGNITE OUR APP -----------------------------------------
+
+npx parcel index.html -> This will hoisted our app on local server 
+ - npx means  'executing the package'
+ - index.html is the entry point 
+
+
+Q) what happend here?
+S) parcel goes to the source file ie index.html & generate a dev build & 
+   hoisted (development build) on the local server
+
+
+Q) what does the parcel do?
+S) - generate Dev Build
+   - Hoisted Source file on Local Server
+   - HMR (Hot module replacement) - means whenever we do any changes in our project, the react app will Automatically Refresh
+                                    It uses File Watching Algorithm written in c++ that constantly checks what changes have been made 
+
+   - Caches [uses cache memory to genertae the file means agr koi change nhi kiya hoyega and dubara build bnayege to Time reduced hojayega pehle se]
+   - Image optimization 
+   - Bundling (bundle all file when we want push code to production)
+   - Compress the Size 
+   - Code Splitting
+
+
+Note: 1. we are using CDN react links to create react app, but it is not good to used because It takes some time to load the react into our project 
+      - so for production ready - npm i react 
+                                - npm i react-dom 
+
+
+      2. React is making the website Fast but it is not the only thing that is makes Fast; 
+      It uses Bundler and many things that makes react more fast 
+
+
+---------------------------- HOW TO BUILD PRODUCTION READY BUILD USING PARCEL -------------------
+
+npx parcel build index.html; // Note: before running this remove main:App.js command from package.json otherwise we got a error
+
+- so when we run the above command, the production build will go in the Dist folder, 
+- and jo abhi tak code jo aa raha tha vo bhi dist folder se hi aa raha tha. 
+- and when we save files it uses parcel-cache to update the UI using HMR,
+
+- so remove dist folder and run this command: npx parcel build index.html;
+
+
+Note: 
+1. dist and parcel cache - we dont push this on github, because we can regenerate 
+
+2. If we want that our website work only for the last 2 version of chrome, Then what should we do
+    In package.json 
+
+      "dependencies": {
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1"
+      },
+      "browsersList":[
+        "last 2 Chrome version"; // means This will definitely work in this browser, 
+      ]
+
+
+Q) How does React Fast?
+S) React is doing DOM manipulation because it has virtual DOM & it has diff Algorithm 
+which do efficient dom manipulation. It finds out difference & then update the UI on Every render. 
+and Bundler also used this which make fast react. 
+
+
+---------------------------------- CODE -----------------------------
+
+1. index.html 
+ <body>
+    <div id="root"></div>
+    <script type="module" src="/app.js"></script> // MAKE SURE TO ADD THIS TYPE:MODULE BECAUSE TO USE import and Export
+  </body>
+
+2. app.js ->
+
+import React from "react"; // because we install the React
+import ReactDOM from "react-dom/client";
+
+const parent = React.createElement("div", { id: "parent" }, [
+  React.createElement("div", { id: "child1" }, [
+    React.createElement("h1", {}, "child Heading 1"),
+    React.createElement("h2", {}, "child Heading 2"),
+  ]),
+  React.createElement("div", { id: "child2" }, [
+    React.createElement("h1", {}, "Child Heading 1"),
+    React.createElement("h2", {}, "Child Heading 2"),
+  ]),
+]);
+
+console.log(parent); // It is React Element [js object] => becomes HTML (Browser understands) => root.render (it convert the object to Html Element that browser runs)
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(parent);
+
+
+----------------------------------- FINISH -------------------------------
+
