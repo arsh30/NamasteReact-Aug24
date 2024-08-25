@@ -123,14 +123,20 @@ Note:
         "react-dom": "^18.3.1"
       },
       "browsersList":[
-        "last 2 Chrome version"; // means This will definitely work in this browser, 
+        "last 2 version"; // browsersList is a tool that specifies which browser should be supported/compatible in your frontend, 
+        // means parcel will make sure that my app works in the last 2 version of all the browsers available
       ]
+
 
 
 Q) How does React Fast?
 S) React is doing DOM manipulation because it has virtual DOM & it has diff Algorithm 
 which do efficient dom manipulation. It finds out difference & then update the UI on Every render. 
 and Bundler also used this which make fast react. 
+
+
+Q) What is Tree Shaking (in bundler)?
+S) Tree shaking is a process of removing unwanted code that we do not use while developing the app 
 
 
 ---------------------------------- CODE -----------------------------
