@@ -1,0 +1,173 @@
+Q) what is another way of starting the build of the project? 
+S) we will create scripts inside package.json instead of using "npx parcel index.html"
+  so In package.json 
+
+  "scripts":{
+    "start" : "parcel index.html",
+    "build":"parcel build index.html"
+  }
+
+  Now to Run the project -> npm run start (start dev build)
+  For prod build -> npm run build 
+
+Note: if we are not sure how to start the project in a new company, then find these scripts in package.json and use them 
+
+
+---------------------------- REVISION OF PREVIOUS EPISODE [WHAT WE ARE DOING] ---------------------------------------------------
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+const heading = React.createElement("div", { id: "heading" }, "Namaste React");
+const root = ReactDOM.createRoot(document.getElementById("root")); //  ReactDOM because we are dealing with browsers
+
+root.render(heading); // render replace every thing which is inside the root with heading in Html
+
+
+-> React.createElement => Basically a JavaScript Object => when we render this On DOM It becomes HTML Element (render method do this)
+-> Above is Core React, so to made syntax easy React Introduces JSX
+
+
+------------------------------ INTRODUCING JSX --------------------------------
+
+Before we begin, we have to remove the existing code from App.js where we used  
+React.createElement() for displaying content on the webpage because its syntax is very bad and not developer friendly 
+
+So to solve this problem Facebook developer built JSX, jsx makes developer life easy as we no longer 
+have to write our code using React.createElement() 
+
+
+Q) what is JSX? 
+S) JSX is Html like syntax. JSX Stands for JavaScript XML [means we can write HTML and Javascript together]
+ 
+  - JSX is not a part of react, react app can be built even without JSX but the code will become very hard to read. 
+  - JavaScript engine can not understand JSX, as it only understand ECMA SCRIPT 
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+// using pure React
+const heading = React.createElement("h1", { id: "heading" }, "Namaste React");
+
+// JSX => Babel transpiles to React.CreateElement ie a JS object => It is render as an HTML Element on browser (Render)
+const jsxHeading = <h1 id="heading">Namaste React using JSX</h1>; // Behind the scene ye createElement me hi convert hota hai, SO BASICALLY IT IS A REACT ELEMENT
+
+root.render(jsxHeading);
+
+
+- JsxHeading and heading both are same Object, so instead of React.createElement() we will use JSX 
+
+------------------- IS BROWSER UNDERSTAND JSX -----------------------------------
+
+No the browser does not understand the JSX, so before the code gets to JS engine, 
+It sent to parcel (bundler) that have babel, so babel transpiles the JSX to react.createElement ie a JS Object and Then the browser Understands our 
+HTML element
+
+So Babel convert the JSX code into the code that browser understand.
+
+JSX which we write inside the return keyword ie JSX: 
+JSX (transpiles by Babel) => React.createElement  => ReactElement (Js object) => It is render as an HTML Element on browser (Render)
+
+
+Q) Difference between  HTML AND JSX ?
+S) Html uses class attribute while JSX uses ClassName
+   HTML Can use hypens in property whereas JSX uses CamelCase syntax 
+  
+
+------------------------ INTRODUCING TO REACT COMPONENT -----------------------
+
+Everything inside React is a component, eg:  button, header, search bar, input box are component
+
+
+THERE ARE 2 TYPES OF COMPONENTS: 
+1. Class based component (Old way, now it is not used)
+2. Function based component (New way of writing the code, now adays used)
+
+NOTE: ALWAYS WHEN WE WILL MAKE NEW PROJECT, USED FUNCTION COMPONENT 
+
+
+1. Function Component -> It is normally Javascript Function that return some JSX ie React Element, is called Functional component
+
+
+// React Element
+const heading = <h1>Namaste React</h1>; // JSX
+
+const Title = () => {
+  return <h1>This is Namaste React Title</h1>;
+};
+// React Functional Component
+const HeadingComponent = () => {
+  return (
+    <>
+      <Title /> // COMPONENT COMPOSITION - SO jo bhi code title me likha hai, inside the return statement, vo sara idr aajega
+      {100 + 100} // We can write any Javascript code inside the  { }  
+      <h1>Heading Functional Component</h1>
+    </>
+  );
+};
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<HeadingComponent />);
+
+
+
+1.1) Components Composition:
+A component inside a component.
+Calling a component inside another component is Component
+Composition. 
+
+1.2) Note: 
+Inside the return statement we can write any javascript code inside the curly brackets{ } 
+eg: console, map, any javascript logic etc
+
+----------------- Example 2 (use javascript variable {} )-----------------
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+
+// React Element
+const heading = <h1>Namaste React</h1>; // JSX
+
+const Title = () => {
+  return <h1>This is Namaste React Title</h1>;
+};
+// React Functional Component
+const HeadingComponent = () => {
+  return (
+    <>
+      // <Title />
+      {100 + 200}
+      {heading}
+      {Title()} // WE CAN ALSO DO LIKE THIS, BECAUSE AT THE END OF THE DAY IT IS JAVASCRIPT FUNCTION SO WE CALL IT
+      <h1>Heading Functional Component</h1>
+    </>
+  );
+};
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<HeadingComponent />);
+
+---------------------- ADVANTAGE OF USING JSX {} -----------------------------
+
+1) Sanitizes the data
+If someone gets access to your JS code and sends some malicious
+data which will then get displayed on the screen, that attack is
+called cross-site scripting.
+It can read cookies, local storage, session storage, get
+cookies, get info about your device, and read data. JSx takes
+care of your data.
+If some API passes some malicious data JSX will escape it. It
+prevents cross-site scripting and sanitizes the data before
+rendering
+
+2) Makes code readable
+JSX makes it easier to write code as we are no longer creating
+elements using React.createElement()
+
+3) Makes code simple and elegant
+
+4) JSX prevents code injections (attacks)
+
+------------------------ FINISH -----------------

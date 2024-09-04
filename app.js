@@ -1,31 +1,23 @@
-/*
-<div id="parent">
-  <div id="child1">
-    <h1>Heading 1</h1>
-    <h1>Heading 2</h1>
-  </div>
-
-  <div id="child2">
-    <h1>Heading 1</h1>
-    <h1>Heading 2</h1>
-  </div>
-</div>
-*/
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-const parent = React.createElement("div", { id: "parent" }, [
-  React.createElement("div", { id: "child1" }, [
-    React.createElement("h1", {}, "child Heading 1"),
-    React.createElement("h2", {}, "child Heading 2"),
-  ]),
-  React.createElement("div", { id: "child2" }, [
-    React.createElement("h1", {}, "Child Heading 1"),
-    React.createElement("h2", {}, "Child Heading 2"),
-  ]),
-]);
+// React Element
+const heading = <h1>Namaste React</h1>; // JSX
 
-console.log(parent); // It is React Element [js object] => becomes HTML (Browser understands) => root.render (it convert the object to Html Element that browser runs)
+const Title = () => {
+  return <h1>This is Namaste React Title</h1>;
+};
+// React Functional Component
+const HeadingComponent = () => {
+  return (
+    <>
+      <Title />
+      {100 + 200}
+      {heading}
+      <h1>Heading Functional Component</h1>
+    </>
+  );
+};
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(parent);
+root.render(<HeadingComponent />);
