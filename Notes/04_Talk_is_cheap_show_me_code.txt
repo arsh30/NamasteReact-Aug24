@@ -1,0 +1,224 @@
+------------ START BUILDING THE REAL APP [FOOD ORDERING APP] -------------------
+
+Before Starting the App , Observe The Requirements and Do Planning Accordingly
+
+1) Planning -> 
+      Name of our app - food app 
+      *** Plan -> How app should look like , draw a UI on the Paper, and Note what things are Required 
+
+2) What Components are Required? [Low Level Code, DRAW THIS ON A PAPER]
+Header
+  logo 
+  Nav Item 
+
+Body 
+  Search 
+  Restaurant Card Container
+  Restaurant Cards
+      Img
+      Name of Res , Cuisines, Start Rating, Delivery Time
+
+
+Footer 
+  Copy right
+  Link 
+  Address 
+  Contact 
+
+------------------------------ MAIN COMPONENT = AppLayout ---------------------------------------
+
+const AppLayout = () => {
+  return (
+    <div className="App">
+      <Header />
+      <Body />
+    </div>
+  );
+};
+
+------------------------------- HEADER COMPONENT -------------------------------
+
+const Header = () => {
+  return (
+    <div className="header">
+      <div className="logo-container">
+        <img
+          className="logo"
+          src="https://www.logodesign.net/logo/smoking-burger-with-lettuce-3624ld.png"
+        />
+      </div>
+
+      <div className="nav-items">
+        <ul>
+          <li>Home</li>
+          <li>About Us</li>
+          <li>Contact Us</li>
+          <li>Cart</li>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+Note: when there are multiple things like cards, make a seperate component for that
+
+
+------------------------------- INLINE STYLING -----------------------------------
+
+It is not recommended to use Inline Styling, so you should avoid this 
+
+Eg:
+    <div className="red-card"
+         style={{ backgroundColor: "#f0f0f0" }}
+    >
+      <h3> Meghana Foods </h3>
+    </div>
+
+In ‘style={{ backgroundColor: "#f0f0f0" }}’, first bracket is to
+tell that whatever is coming next will be JavaScript and the
+second bracket is for JavaScript object
+
+
+  OR you can store the CSS in a variable and then use it
+
+    const styleCard = { backgroundColor: "#f0f0f0" };
+
+    <div
+    className="red-card"
+    style={styleCard}
+    >
+      <h3> Meghana Foods </h3>
+    </div>
+
+----------------------------- PROPS (ARE ALSO called PROPERTIES we sent this) ---------------------------------
+
+Short form for properties. To dynamically send data to a
+component we use props. Passing a prop to a function is like
+passing an argument to a function.
+
+
+PASSING PROP TO A COMPONENT 
+Ex: 
+  <RestaurantCard
+    resName="Meghana Foods"
+    cuisine="Biryani, North Indian" // ‘resName’ and ‘cuisine’ a props and this is prop passing to a component
+  />
+  
+  RECEVING PROPS IN THE COMPONENT:
+  Props will be wrapped and send in Javascript object
+  
+  Example,
+
+  const RestaurantCard = (props) => {
+    return(
+            <div>{props.resName}</div>
+          )
+    }
+  
+  DESTRUCTURING PROPS: 
+
+  Example,
+  
+  const RestaurantCard = ({resName, cuisine}) => { // DESTRUCTURING ON THE FLY
+  return(
+         <div>{resName}</div>
+        )
+  }
+
+
+------------------------------ CONFIG DRIVEN UI ---------------------
+
+It is a user Interface that is built and configured using a
+declaration configuration file rather than being hardcoded.
+
+Config is the data coming from the api which keeps on changing
+according to different factors like user, location, etc.
+
+Example: In India on 15 august, we have sale but it is not present in canada or usa 
+        or its vice versa is not true. 
+
+
+----------------------- Unique Key id while using map ---------------
+
+Each item in the list must be uniquely identified
+
+Why? 
+When we have components at same level and if a new component
+comes on the first without ID, DOM is going to re-render all the
+components again. As DOM can’t identify where to place it.
+
+But if we give each of them a unique ID then react knows where
+to put that component according to the ID. It is a good
+optimization and performance thing.
+
+Note* Never use index as keys in map. It is not recommended.
+
+
+----------------------------- COMPLETE CODE -------------------------------
+
+const Header = () => {
+  return (
+    <div className="header">
+      <div className="logo-container">
+        <img
+          className="logo"
+          src="https://www.logodesign.net/logo/smoking-burger-with-lettuce-3624ld.png"
+        />
+      </div>
+
+      <div className="nav-items">
+        <ul>
+          <li>Home</li>
+          <li>About Us</li>
+          <li>Contact Us</li>
+          <li>Cart</li>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+const RestaurantCard = (props) => {
+  const { resData } = props; // props are object
+  const {name,cuisines,avgRating,costForTwo,sla } = resData?.info;
+  return (
+    <div className="res-card">
+      <img
+        className="food-img"
+        src={`https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_660/${resData?.info?.cloudinaryImageId}`}
+        alt="foodImg"
+      />
+      <h3 className="mb mt">{name}</h3>
+      <h4 className="mb">{cuisines.join(", ")}</h4>
+      <h4 className="mb">{avgRating} stars</h4>
+      <h4 className="mb"> {costForTwo}</h4>
+      <h4 className="mb">{sla?.slaString}</h4>
+    </div>
+  );
+};
+
+const Body = () => {
+  return (
+    <div className="body">
+      <div className="search">Search</div>
+      <div className="res-container">
+        {resData?.map((resData) => { // note: not using index as a key
+          return <RestaurantCard key={resData?.info?.id} resData={resData} />;
+        })}
+      </div>
+    </div>
+  );
+};
+const AppLayout = () => {
+  return (
+    <div className="App">
+      <Header />
+      <Body />
+    </div>
+  );
+};
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<AppLayout />);
+
+----------------- FINISH --------------
