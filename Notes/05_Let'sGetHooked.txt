@@ -1,0 +1,234 @@
+CLEAN UP THE CODE, 
+It's best to create separate files for each component
+
+Q) How can we achieve this?
+s) So we can follow the Folder Structure, currently all files are located at root level 
+
+Q)We are going to Restructure our project folder "NAMASTE-REACT"
+
+S) There is a very good convention in the industry that all the
+code in a React project is kept in a ’src-folder’, there is
+no compulsion to use a ‘src-folder’ in a project. 
+
+- We are creating and moving our App.js file in the ‘src-folder’
+and whatever new files we create we put them in the ‘srcfolder’
+
+📢 NOTE: Don't forget to update the path of the App.js file
+in index.html other we will get an Error.
+
+The best practice is to make separate files for every component.
+
+We have the following components.
+1. Header
+2. RestaurantCard
+3. Body
+
+We put all the above components inside the folder named
+‘components’(child-folder) which has been placed inside the
+‘src- folder’(parent folder). When we are creating separate
+component files inside the ‘components-folder’ always start with
+a capital letter like.
+
+In this course, we are using (.js) as an extension.
+1. Header.js
+2. RestaurantCard.js
+3. Body.js
+
+NOTE: 
+1. We can use (.jsx) as an extension instead of (.js) 
+2. Never keep hardcoded data in the app, so make a new file inside Utils folder
+
+---------------------------- IMPORT AND EXPORT ----------------------
+
+1. whenever we have named export eg: export const data = []; 
+    Then we import like this: import {data} from './file';
+
+2. whenever we do: "export default data" then we dont need to use { }
+   we can simply import by using:  import data from "./file"
+
+Note: Export default componentName; We can do only once in one code 
+When we have to do mulitple export from one file then we use Named export 
+and usko import krege into the curly brackets
+
+
+Note: Try to Make the file in Less code Not more than 100 or 150 lines, 
+if the component exceeds this, then make a separate file for this 
+ 
+-------------------------- Let’s Get Hooked! (Namaste-React) 5 -----------------------
+
+1.  <button
+          className="filter-btn"
+          onClick={() => {
+            const filteredResults = listOfRestaurants.filter((res) => {
+              return res?.info?.avgRating > 4;
+            });
+            console.log(filteredResults);
+          }}
+        >
+          Top Rated Restaurants
+   </button>
+
+  onclick eventhandler: It has a callback which will be called when we clicked on the button 
+
+
+Q) How these cards are coming on the screen?
+S) These cards are appear on the screen because we're using the
+map() method to go through each restaurant in our mock data
+( resList ). 
+This method helps us display the information from
+each restaurant on individual cards. so any thing changes in
+reslist the cards displayed on the screen will also change.
+
+Despite implementing the code, no visible changes
+occur on the screen. However, we successfully filter the data,
+which we can confirm by checking the filtered results using
+console.log(filterlogic).
+
+Q ) How can we display filtered restaurants dynamically on
+UI(display screen) ?
+Sol) So currentlyt listOfRestaurants, we are using a Normal JS variable, 
+To dynamically update the ui, we can use React use State hook  
+
+
+Q) What is Hook ?
+S) A normal JS function which is given by React, developed by Fb developers
+ 
+1. UseState hook -> 
+It allows you to add a State variable to your component, it is kind of a variable 
+to store something, when we use normal javascript variable to store some thing, and when we change that variable ,
+our component did not see the changes while when we use the use state hook, 
+it re-render the entire component 
+
+
+Q) Why doesn't the state get re-initialized on re-render?
+S) State is preserved across re-renders:
+
+React only re-initializes the state once, when the component is first rendered (mounted). On subsequent re-renders, React will "remember" the state values that were already set, and it won’t re-initialize them.
+
+This behavior is what allows state to persist between renders, so that when you update the state using the setState function, React re-renders the component but keeps the existing state unless it's explicitly updated
+
+Ex: 
+const [listOfRestaurant] = useState([]);
+we pass an empty array [] as the initial
+value inside the useState([]) method. This empty array serves as
+the default value for the listOfRestaurant variable.
+
+If we pass the listOfRestaurant where we stored all the restaurant
+data inside the useState() as the default data, it will render the
+restaurants on the screen using that initial data.
+
+Q) How could we modify the list of restaurant ?
+S)
+To modify we pass the second argument setListOfRestaurant we can name
+as we wish. setListOfRestaurant used to update the list.
+
+import { useState } from "react";
+
+const [listOfRestaurant , setListOfRestaurant] = useState
+([]);
+
+
+Q ) How can we display filtered restaurants dynamically on
+UI(display screen)? I am repeating the same question which we
+had previously.
+
+S) 
+We are using setListOfRestaurant inside the call-back function to
+show the filtered restaurant. on clicking the button we will see
+the Updated top-rated restaurant.
+    <button
+        className="filter-btn"
+        onClick={() => {
+        const filtertheRestaurant = listOfRestaurant.filter((res) => {
+         return ( res.data.avgRating > 4));
+         });
+
+       setListOfRestaurant(filtertheRestaurant);
+      }}
+      >
+      Top Rated Restaurant
+   </button>;
+
+NOTE:
+
+- The crucial point about State variables is that
+whenever they update, React triggers a reconciliation
+cycle and re-renders the component.
+
+- This means that as soon as the data layer changes,
+React immediately updates the UI layer. The data layer is
+always kept in sync with the UI layer.
+
+- To achieve this immediate operation, React uses a
+reconciliation algorithm, also known as the diff
+algorithm or React-Fibre.
+
+
+---------------------------- IMPORTANT NOTE: -----------------------------------
+
+In React, when you have a state that is needed in multiple components (parent and child), it's better to manage that state in the parent component and pass it down as props to the child components. This allows you to
+maintain a single source of truth and ensures that any updates to the state are reflected across all relevant components.
+
+If you want to filter data in a child component based on the state in the parent, you should manage the state in the parent and pass both the state and the filtering function to the child component.
+
+** Jidr bhi state hogi, kahin se bhi update ho, vo wala compoennt pura re-render hoga, jidr state create kri hai 
+
+
+
+Can You Put State in the Child Instead?
+You could have a state in the child component, but it’s not a good practice if the parent also depends on the data. 
+In React, state should generally be kept as high up in the component tree as possible when multiple components need to access it. By keeping the state in 
+the parent, you avoid data inconsistency and complexity.
+
+If you put the state in the child, you would need to pass the filtered data back to the parent, which complicates
+ the structure unnecessarily.
+
+
+---------------------------- IMPORTANT NOTE END -----------------------------------
+
+
+what is react algorithm ? how react work behind the scenes ? how react is fast?
+
+S) React is fast because it uses Reconciliation algorithm also known as (React Fibre ie introduce in react 16).
+Because it uses virtual Dom. 
+so Virtual Dom (a JS object or React Element or Component) is representation of Actual DOM.
+whereas the Actual dom is basically a Browser representation of your web (html),
+
+so when we do any changes in the app state data, that control what's displayed on the UI 
+react updates the virtual dom first 
+
+this update is very faster then directly updating the DOM, because its just a JS object 
+and then react uses diff algorithm that is comparing the updated virtual dom with the previous 
+version, this process is called reconciliation (react fibre)
+
+Through reconciliation and diff algorithm, react figures out the minimal changes needed in the real dom ,
+to reflect the update in the virtual dom 
+
+-------------
+
+EXAMPLE: ->
+suppose we have parent component ie Res Container, that have 7 child ie 
+RestaurantCard; 
+
+Now our Ui Changes to filtering these 7 cards to 3 filtered cards based on their rating.
+
+Q) What react is do Behind the scenes and Why react is Fast? 
+S) suppose we have 7 cards ie is the initial ui and react make a Virtual DOM[JS Object] of it
+means a JS object. [as we know a JS object is very fast] 
+ 
+so, Diff algorithm is the finds out the difference between the updated virtual dom 
+with the previous virtual dom and and then it will actual updated the dom on every render cycle
+
+
+Example of Diff algorithm: 
+
+Total 7 RestaurantCard we have (Old Virtual Dom) and when i clicked the button 
+The new virtual dom is updated to 3 (when we clicked) a new Object [Virtual dom is formed], so it basically tries out to find the difference  
+between old virtual dom and new virtual dom ie of 4 nodes 
+
+and then it will actual updated the dom on every render cycle
+
+Note: Jo bhi React me dikhta hai vo sab Virtaul DOM hai, 
+
+---------------------------- FINISH --------------------------------
+

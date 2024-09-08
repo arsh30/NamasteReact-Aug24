@@ -128,7 +128,7 @@ Ex:
 
 ------------------------------ CONFIG DRIVEN UI ---------------------
 
-It is a user Interface that is built and configured using a
+It is basically a UI that is built and configured using a
 declaration configuration file rather than being hardcoded.
 
 Config is the data coming from the api which keeps on changing

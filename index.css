@@ -55,12 +55,10 @@
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth transition */
 }
 
-
 .res-card:hover {
   transform: scale(1.1); /* Enlarges the card uniformly */
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5); /* Stronger shadow for pop-out effect */
 }
-
 
 .search {
   padding: 20px 0;
@@ -86,10 +84,26 @@
   margin-bottom: 15px;
 }
 
-
 .res-container {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 20px;
+}
+
+.filter {
+  margin: 20px;
+}
+.filter-btn {
+  padding: 10px;
+  border-radius: 12px;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  background-color: crimson;
+  color: white;
+}
+
+.filter-btn:hover {
+  background-color: rgb(146, 10, 37);
 }
