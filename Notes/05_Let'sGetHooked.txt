@@ -229,6 +229,7 @@ between old virtual dom and new virtual dom ie of 4 nodes
 and then it will actual updated the dom on every render cycle
 
 Note: Jo bhi React me dikhta hai vo sab Virtaul DOM hai, 
+set state jb krte tab re-rendering hoti hai, reconciliation process start hota
 
 ---------------------------- FINISH --------------------------------
 
