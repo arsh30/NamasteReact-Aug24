@@ -1,0 +1,170 @@
+------------------------------ EXPLORING THE WORLD ---------------------
+
+MONOLITH ARCHITECTURE -> means sara code 1 hi project me aajega like frontend , backend, authentication, DB connectivity, Email Notification , API
+sab 1 hi project me aajega 
+
+MICRO SERVICES ->  all the Big companies are moving towards microservices architecture 
+we have different service that have different purpose, They follow seperation of concern principle & single responsibiltiy principle.
+
+
+Example 1 service (for frontend), 1 service (for backend) , 1 service (Notification), 1 service for authentication
+all these are merge together later and they form a big project 
+service - means new project setup.
+
+Each service have deployed on different PORT and we can access through the api's 
+
+------------------------------ API Integration ------------------------------------------
+
+1. when the app loads - we can make the api call and wait for data to come and then render the UI 
+   suppose the api takes 5s to get the data, and suddenly the data comes, 
+
+
+
+2. Approach 2 -> as soon as page load , we render the UI quickly, and then we make an API call, and re-render
+ the application to populate the new data
+
+
+ In react we always used 2nd Approach because this give us better UX 
+ because in Approach1 5s tak ui par kuch nhi dikhega and ekdum se dikhega, which is not good way 
+ so in second ui, atleast we can see the UI , and as soon as the data come we populate the UI with updated data 
+ by re-rendering app again. 
+
+ ----------------------------------- USE EFFECT HOOK ------------------------------------------------------
+
+ Hook -> A hook is Javascript function which is given by react, every hook has their own purpose 
+
+useEffect -> It takes 2 argument a callback function and a dependency, 
+            This callback function calls after the Component render. as soon as render is complete it will quickly call the useEffect. 
+
+            [means pehle return wala part execute hoga and then useEffect chelga]
+
+ Syntax -> 
+ useEffect (() => {
+    fetchData();
+ },[])
+
+
+
+SOME TIME WE GOT THIS ERROR -> 
+https://www.swiggy.com/dapi/restaurants/list/v5?lat=28.6139298&lng=77.2088282&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING' 
+from origin 'http://localhost:1234' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
+
+Means our browser is not allowing to call the swiggy api from localhost [one origin to other origin]
+this is CORS policy
+
+so install the Extension -> cors chrome extension and On this , and then reload the app
+
+
+----------------------BASICALLY CALLING AN API AND SEARCH API CODE : -------------------------------------
+
+here there is two important points to remember:
+
+1) When we need to modify the list Of Restaurants based on
+certain conditions, we're essentially using the duplicate
+data we fetched and stored within the ‘ originalListOfRestaurants '
+variable. (original)
+
+2) To display data on the UI, we use a original of ‘listOfRestaurant' called ‘ filteredRestaurant'
+
+
+const Body = () => {
+  const [listOfRestaurants, setListOfRestaurants] = useState([]);
+  const [originalListOfRestaurants, setOriginalListOfRestaurants] = useState(
+    []
+  );
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null); // null because we dont know ki error me kya aayega ho skta hai object, string kuch bhi ho isliye null liya
+
+  const [searchTxt, setSearchTxt] = useState("");
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const data = await fetch(API_URL);
+      const response = await data.json();
+      const restaurants =
+        response?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle
+          ?.restaurants;
+    
+      setListOfRestaurants(restaurants);
+      setOriginalListOfRestaurants(restaurants);
+      setLoading(false);
+    
+    } catch (error) {
+      setLoading(false);
+      setErrorMessage(error.message);
+    }
+  };
+
+  const handleSearch = () => {
+    if (searchTxt.trim()) {
+      const updatedResturants = originalListOfRestaurants?.filter((elem) => {
+        return elem?.info?.name
+          .toLowerCase()
+          .includes(searchTxt?.toLowerCase());
+      });
+      setListOfRestaurants(updatedResturants);
+    } else {
+      setListOfRestaurants(originalListOfRestaurants); // isme original list me basically backup pda hua hai
+    }
+  };
+
+  if (errorMessage !== null) {
+    return <h1 style={{ textAlign: "center" }}>{errorMessage}</h1>;
+  }
+
+  return loading ? (
+    <Shimmer />
+  ) : (
+    <div className="body">
+      <div className="filter">
+        <button
+          className="filter-btn"
+          onClick={() => {
+            const filteredResults = listOfRestaurants?.filter((res) => {
+              return res?.info?.avgRating > 4.3;
+            });
+            console.log(filteredResults);
+            setListOfRestaurants(filteredResults);
+          }}
+        >
+          Top Rated Restaurants
+        </button>
+
+        <div className="search-container">
+          <input
+            type="text"
+            className="searchInput"
+            placeholder="Enter search"
+            name="search"
+            value={searchTxt}
+            onChange={(e) => setSearchTxt(e.target.value)}
+          />
+          <button onClick={handleSearch} className="searchBtn">
+            Search
+          </button>
+        </div>
+      </div>
+      <div className="res-container">
+        {listOfRestaurants?.map((resData) => {
+          return (
+            <Link
+              to={`restaurants/${resData?.info?.id}`}
+              key={resData?.info?.id}
+            >
+              <RestaurantCard resData={resData} />
+            </Link>
+          );
+        })}
+      </div>
+
+      <div>
+        {listOfRestaurants.length === 0 ? <h1>Nothing is Found....</h1> : null}
+      </div>
+    </div>
+  );
+};
+
+------------------------------ finish -------------------------

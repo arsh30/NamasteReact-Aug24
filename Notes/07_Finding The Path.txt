@@ -1,0 +1,241 @@
+Q) What are various ways to add images to our App?
+Explain with code examples
+
+
+S) There are several ways to add the image in the object:
+1. Importing images using ES6 modules
+2. using public folder
+3. loading image from remote
+4. using image assets within css
+
+
+1. IMORTING IMAGE USING ES6 MODULES ->  We can import images directly using ES6
+    modules. This is a common approach for  small to medium-sized apps , and it's
+    straightforward. Firstly, We have to place our image in the project directory (e.g.,
+    in the src folder or a subfolder)
+
+
+    EG:
+
+    import myImage from './my_image.jpg';
+    
+    function App() {
+        return (
+            <div>
+            <img src={myImage} alt="My Image" />
+            </div>
+        );
+    }
+    export default App;
+
+
+
+2. USING PUBLIC FOLDER:  If we want to reference images in the public folder, we can
+do so without importing them explicitly. This method is useful for handling large
+image assets or for dynamic image URLs. Place your image in the public directory.
+
+
+Example: If you have an image in the public directory of a React app, like this:
+public/
+  └── my_image.jpg
+
+
+function App() {
+    return (
+        <div>
+            <img src={process.env.PUBLIC_URL + '/my_image.jpg'} alt="My Image" /> // we can access like this, This will generate the path like this "http://localhost:3000/my_image.jpg"
+        </div>
+    );
+}
+
+
+
+3. Loading images from a remote source We can load images from a remote source,
+such as an external URL or a backend API, by specifying the image URL directly in
+our img tag.
+
+function App() {
+ const imageUrl = 'https://example.com/my_image.jpg';
+    return (
+        <div>
+            <img src={imageUrl} alt="My Image" />
+        </div>
+    );
+}
+
+
+
+4.Using image assets within CSS We can also use images as background images or
+in other CSS styling. In this case, we can reference the image in your CSS file.
+
+
+.image-container {
+ background-image: url('/my_image.jpg');
+ width: 300px;
+ height: 200px;
+}
+
+import './styles.css';
+function App() {
+    return (
+        <div className="image-container">
+             {/* Content goes here */}
+        </div>
+    );
+}
+export default App;
+
+
+-----------------------------------------------------------------------------------------------------
+
+
+Q) What would happen if we do console.log(useState())?
+
+S) used to declare a local state variable, When we call useState(),
+it returns an array with two elements: 
+the current state value and a function to update that state value
+
+so if we do console the output that we will see like this: "[0, Function]" 
+first parameter is initial value, 2nd value is function to update that initial value, so component will re-render 
+
+Note: 
+1. always use usestate at the top of the component 
+2. never use hook conditionally, means if condition ke andr hook ko create nahi kar skte
+3. never use hook (Create state variable) inside the function, for loop etc 
+
+
+---------------------------------------------------------------------------------------------------------
+
+
+Q) USE EFFECT HOOK -> 
+
+S) Syntax: 
+useEffect(() => {
+    console.log('use effect called'); 
+    
+    return () => {
+        // clean up function to remove the event listners
+    }
+}, [])
+
+// Note: 1. - If no dependency is there, it will called on every render, 
+            - so by putting dependency, so vo first time hi render krega, if dependency is Empty, 
+            - agr isme kuch dependency pass krege, toh use effect will called every time, when the dependency changes.
+
+            By default first time to chlega hi chlega
+     
+2. phle neeche ka return part execute hoga then use effect will run 
+
+--------------------------------------------- ROUTING ---------------------------------------------
+
+-> npm i react-router-dom
+
+1. CONFIGURATION AT ROOT LEVEL: ie App.js in our code, or in other code it may be index.js.
+
+
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+
+const AppLayout = () => {
+  return (
+    <div className="App">
+      <Header />
+      <Outlet /> // 1. OUTLET - the children of AppLayout component will get change according to path: eg: 
+                 // localhost:3000/ -> body will render, then suppose we will click on /about 
+                 // then the route will be -> localhost:3000/about (toh about wala component render kr jayega)
+
+                 // 2. And jo bhi Outlet ke bhar hoga vo common rhega har page par.
+    </div>
+  );
+};
+
+const appRouter = createBrowserRouter([
+  {
+    path: "/",
+    element: <AppLayout />,
+    children: [
+      {
+        path: "/",
+        element: <Body />,
+      },
+      {
+        path: "/about",
+        element: <About />,
+      },
+      {
+        path: "/contact",
+        element: <Contactus />,
+      },
+      {
+        path: "/restaurants/:resId", // 3. This is we create Dynamic Route: Eg: localhost:3000/restaurants/121221, agr ye route hoga toh RestaurantMenu render hoga
+        element: <RestaurantMenu />,
+      },
+    ],
+    errorElement: <NotFound />, // 4. Error page we create this, agr koi route nhi match krega toh Not found render hoga
+  },
+]);
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<RouterProvider router={appRouter} />); // 5. CONFIGURATION provide krega app me
+
+
+
+NOTE: NOW CHECK MANUALLY URL CHANGE KRKE, KI NAVIGATE KRRA HAI, 
+
+------------
+
+-> NOW LINKING SHOULD HAVE DONE (Means agr button ke click ke upr new page open krwana hai)
+
+-> import {Link} from 'react-router-dom';
+const Header = () => {
+    return (
+        <div>
+            <ul>
+                <li>
+                    <Link to = '/' />
+                </li>
+
+                 <li>
+                    <Link to = '/about' /> // means agr about pr click krega toh url me about aajega, means us page par redirect krega
+                </li>
+            </ul>
+        </div>
+    )
+}
+
+------------------------------------------
+
+-> TYPES OF ROUTING: 
+
+1. Client side routing: Entire app is load once & then only changes the component [In react we do this, using react-router-dom]
+                        means page does not fully re-loaded sirf andr ka content change hota hai 
+
+
+2. Server Side routing: traditional way of routing where every time a user navigate to different page eg: (/about),
+                        a new request is made to the server for new page & the entire website will reloaded (multipage website)
+
+-------------------------------------------
+
+-> DYNAMIC ROUTING: (upr configuration me bhi pass kiya hai ie :/id)
+
+ex: 1 restaurant card par click kra then new screen pr redirect hoga 
+
+Inside router configuration (jo upr kri hai in appRouter):
+
+ie  {
+        path: "/restaurants/:resId", // 3. This is we create Dynamic Route: Eg: localhost:3000/restaurants/121221, agr ye route hoga toh RestaurantMenu render hoga
+        element: <RestaurantMenu />,
+    },
+
+// means restaurant ke baad agr kuch bhi likege that will be consider as ID 
+
+------------------------------------------
+
+-> HOW TO RECIEVE THAT ID FROM THE URL ie ['USE PARAMS HOOK']
+
+jo bhi parameter me data aayega vo hum get krege by using UseParams hook (from react-router-dom)
+
+
+import { useParams } from "react-router-dom";
+const {resId} = useParams(); // this will give the object, jo bhi url me hoga
+
+------------------------------- FINISH ------------------------------------------------------

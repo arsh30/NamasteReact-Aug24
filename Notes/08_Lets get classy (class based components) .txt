@@ -1,0 +1,647 @@
+- class based component is an older way of creating component
+
+HOW TO CREATE THIS: 
+
+1. Functional component: 
+
+const User = () => { // A normal function which return some piece of JSX
+  return (
+    <div>
+      <h2>Name: Arshdeep</h2>
+      <h3>Location: New Delhi</h3>
+      <h4>Email: abc@email.com</h4>
+    </div>
+  );
+};
+
+export default User;
+
+
+THE SAME COMPONENT WE WILL MAKE THROUGH CLASS COMPONENT
+
+import React from "react";
+
+class UserClass extends React.Component {
+  render() {
+    return (
+      <div className="user-card">
+        <h2>Name: Arshdeep</h2>
+        <h3>Location: New Delhi</h3>
+        <h4>Email: abc@email.com</h4>
+      </div>
+    );
+  }
+}
+
+export default UserClass;
+
+- extends React.component -> means we are telling react that it is a class based component, and we are creating Userclass 
+                            which inherit from React.Component. 
+
+
+- render method: class based component has a render method which return JSX 
+
+-----------------------------------------------------------------------------------------------
+
+
+HOW TO PASS THE PROPS AND RECIEVE THEM : 
+
+const About = () => {
+  return (
+    <div>
+      <h2>This is About Component</h2>
+      <User name={"Functional Component"} /> // PASSING PROPS IN FUNCTIONAL COMPONENT
+      <UserClass name={"Class based Component"} /> // PASSING PROPS IN CLASS BASED COMPONENT
+    </div>
+  );
+};
+
+
+HOW TO RECIVE: 
+
+1. Functional: 
+
+const User = ({name}) => {
+  return (
+    <div className="user-card">
+      <h2>Name: {name}</h2>
+      <h3>Location: New Delhi</h3>
+      <h4>Email: abc@email.com</h4>
+    </div>
+  );
+};
+
+2. Class based component: 
+
+import React from "react";
+class UserClass extends React.Component {
+  constructor(props) {
+    // to recieve the props
+    super(props); // calling the constructor of the parent class ie react.component,
+  }
+  render() {
+    const { name } = this.props;
+    return (
+      <div className="user-card">
+        <h2>Name: {name}</h2>
+        <h3>Location: New Delhi</h3>
+        <h4>Email: abc@email.com</h4>
+      </div>
+    );
+  }
+}
+
+export default UserClass;
+
+
+--------------
+
+Q) why we use super(props) in constructor?
+S) In js, when we define a class that extend another class (inherit from parent class)
+we often use super() method with props as an argument in the constructor of child constructor
+
+super props is used for following reasons:
+- access to parent class constructor - used to invoke the constructor of the parent class ensuring that parent class initialization 
+  is performed before the child class constructor is executed 
+
+- passing props to parent constructor: by passing props to super (props), we ensure that the props is correctly passed to parent class constructor, 
+this is important because parent classs may need to setup its properties
+
+
+Eg: 
+class UserClass extends React.Component { 
+  constructor(props){  
+
+    super(props); // calling the constructor of the parent class
+    // API Call
+  }
+  render() {
+    return (
+      <div>
+        <h1>Hey there</h1>
+      </div>
+    )
+  }
+}
+
+IN the above example super(props) ensure that React.component constructor is called. this is important because 
+react uses props to pass the data from parent to child. 
+by calling super(props) we ensure the props are properly handled in parent class constructor & we can access them in 
+our child component.
+
+------------------
+
+
+HOW TO CREATE STATE IN BOTH:
+invoking <=> mounting <=> loading [all are same words]
+
+1. Functional: 
+
+
+const User = ({ name }) => {
+  const [count, setcount] = useState(0);
+  const [count2, setCount2] = useState(1); // behind the scenes react hold all the state variable in one object in functional component like class based comp
+
+  return (
+    <div className="user-card">
+      <h1>count: {count}</h1>
+      <h1>count2:{count2}</h1>
+      <h2>Name: {name}</h2>
+      <h3>Location: New Delhi</h3>
+      <h4>Email: abc@email.com</h4>
+    </div>
+  );
+};
+
+----
+
+2. Class component: 
+
+when loading a class based component onto webpage, means we are creating instance of the class, 
+when ever you create a instance of a class, the constructor will be called, it is the best place to 
+recieve props, and this is best place to create the states 
+
+class UserClass extends React.Component {
+  constructor(props) {
+    // to recieve the props
+    super(props); // calling the constructor of the parent class ie react.component,
+
+    this.state = { // the state variable is a big object, which can contain all the states of this component
+     count: 0,
+     count2: 1,
+    };
+  }
+  render() {
+    const { name } = this.props;
+    return (
+      <div className="user-card">
+        <h1>count: {this.state.count}</h1>
+        <h1>count2: {this.state.count2}</h1>
+        <h2>Name: {name}</h2>
+        <h3>Location: New Delhi</h3>
+        <h4>Email: abc@email.com</h4>
+      </div>
+    );
+  }
+}
+
+------------------------------------------
+
+HOW TO UPDATE THE STATE VARIABLES: 
+
+1. CLASSED BASED Component: 
+
+import React from "react";
+class UserClass extends React.Component {
+  constructor(props) {
+    // to recieve the props
+    super(props); // calling the constructor of the parent class ie react.component,
+
+    this.state = {
+      count: 0,
+    };
+  }
+  render() {
+    const { name } = this.props;
+    return (
+      <div className="user-card">
+        <h1>count: {this.state.count}</h1>
+        <h2>Name: {name}</h2>
+        <h3>Location: New Delhi</h3>
+        <h4>Email: abc@email.com</h4>
+
+        <button
+          onClick={() => {
+            // NEVER UPDATE THE STATE VARIABLES DIRECTLY EG: this.state.count = count + 1 (wrong)
+            this.setState({
+              count: this.state.count + 1,
+              //   count: this.state.count + 1, // Note 1 -> React batches state updates, and it only accepts the latest value for each key in the state object. Therefore, when you specify multiple updates to count in the same setState call, only the last value will be used.
+              //   count: this.state.count + 1,
+              //   count2:this.state.count + 2;, Note 2: if we want to update the count 2 variable toh 1 or set state nhi krege idr hi krege because saari states ek sath batch hoti hai
+            });
+          }}
+        >
+          Count Increment
+        </button>
+      </div>
+    );
+  }
+}
+
+export default UserClass;
+
+------------------------------------------------------------
+
+
+LIFE CYCLES METHOD IN CLASS BASED COMPONENT: 
+
+->  constructor -> render -> component did mount (where we do API call)
+
+class About extends React.Component {
+  constructor(props) {
+    super(props);
+
+    console.log("parent constructor");
+  }
+
+  componentDidMount() {
+    console.log("parent component did mount");
+  }
+
+  render() {
+    console.log("parent render");
+    return (
+      <div>
+        <h2>This is About Component</h2>
+        <UserClass name={"Arsh Class based Component"} />
+      </div>
+    );
+  }
+}
+
+
+-------
+
+2. User Class -> 
+
+class UserClass extends React.Component {
+  constructor(props) {
+    console.log("child constructor");
+    // to recieve the props
+    super(props); // calling the constructor of the parent class ie react.component,
+
+    this.state = {
+      count: 0,
+    };
+  }
+
+  componentDidMount() {
+    console.log("child component did mount");
+
+    // API CALL
+  }
+
+  render() {
+    console.log("child render");
+    const { name } = this.props;
+    return (
+      <div className="user-card">
+        <h1>count: {this.state.count}</h1>
+        <h2>Name: {name}</h2>
+        <h3>Location: New Delhi</h3>
+        <h4>Email: abc@email.com</h4>
+
+        <button
+          onClick={() => {
+            // NEVER UPDATE THE STATE VARIABLES DIRECTLY EG: this.state.count = count + 1 (wrong)
+            this.setState({
+              count: this.state.count + 1,
+              //   count: this.state.count + 1, // Note 1 -> React batches state updates, and it only accepts the latest value for each key in the state object. Therefore, when you specify multiple updates to count in the same setState call, only the last value will be used.
+              //   count: this.state.count + 1,
+              //   count2:this.state.count + 2;, Note 2: if we want to update the count 2 variable toh 1 or set state nhi krege idr hi krege because saari states ek sath batch hoti hai
+            });
+          }}
+        >
+          Count Increment
+        </button>
+      </div>
+    );
+  }
+}
+
+
+Q) what is the order of the Life cycle methods? [constructor -> render -> component did mount (where we do API call)]
+   In life cycle, we have 3 phases i mounting, updating, unmounting
+
+S) - parent constructor 
+   - parent render 
+
+   Then the child component ie User class will load completely including component did mount: 
+
+   - child constructor 
+   - child render 
+   - child componentDidMount 
+
+   - parent componentDidMount 
+
+
+Note: jab hum User Class extend Krti hai ie React.Component it means vo inherit krri hai ie About Component 
+
+---------------------------------------------------------------------------------
+
+TRICKY QUESTION - PLEASE TELL ME THE OUTPUT HOW IT WORKS: 
+
+class About extends React.Component {
+  constructor(props) {
+    super(props);
+
+    console.log("parent constructor");
+  }
+
+  componentDidMount() {
+    console.log("parent component did mount");
+  }
+
+  render() {
+    console.log("parent render");
+    return (
+      <div>
+        <h2>This is About Component</h2>
+        <UserClass name={"Arsh Class based Component"} />
+        <UserClass name={"Anonymous Class based Component"} /> //Here we have 2 instances of the same class ie User class
+      </div>
+    );
+  }
+}
+
+what is the output: 
+
+- parent constructor 
+- parent render 
+
+- 1st child constructor 
+- 1st child render 
+- 2nd child constructor
+- 2nd child render 
+
+- 1st componentDidMount (once the component of this lifecycle is finish then ab dusri life cycle run hogi)
+- 2nd child componentDidMount
+
+- parent componentDidMount 
+
+Reason is: Because React Optimise the app, due to batching, 
+in mounting we have 2 phases: 
+1. render phase - constructor and render method is called 
+2. commit phases - where it actually update the dom , and then componentDidMount 
+
+so Basically react batches the render phases of both the child (basically jitne child honge sabko batch krdega), thats why 
+it is printing like 1st child constructor and 1st child render, 
+and then 2nd child constructor and then 2nd child render, 
+
+and then the commit phase will run for both the child ie 1st componentDidMount and 2nd componentDidMount. 
+
+---------------------------------------------------------------------------------------------------------------------
+
+HOW TO DO API CALL IN THE CLASS BASED COMPONENT: 
+
+
+class UserClass extends React.Component {
+  constructor(props) {
+    // constructor is basically for reciving props
+
+    console.log("child constructor");
+    super(props); // calling the constructor of the parent class ie react.component (means user class ka parent),
+
+    this.state = {
+      userInfo: {
+        name: "Dummy",
+        location: "Default",
+        // avatar_url: "http://dummyphot.com",
+      },
+    };
+  }
+
+  async componentDidMount() {
+    console.log("child component did mount");
+    // API Call
+    const data = await fetch("https://api.github.com/users/arshdeep30");
+    const response = await data.json();
+    this.setState({
+      userInfo: response,
+    });
+  }
+
+  componentDidUpdate() {
+    console.log("Component Did Update");
+  }
+
+  componentWillUnmount() {
+    // means whenever the component will unmount (means it disappear from the webpage, wheter we move to some other component)
+    console.log("COmponent will unmount");
+  }
+  render() {
+    console.log("child render");
+    const { name } = this.props;
+    return (
+      <div className="user-card">
+        <h2>Name: {this.state.userInfo.login}</h2>
+        <img
+          src={this.state.userInfo.avatar_url}
+          width={40}
+          height={40}
+          alt="img"
+        />
+        <h3>Location: {this.state.userInfo.location}</h3>
+        <h4>Email: abc@email.com</h4>
+      </div>
+    );
+  }
+}
+
+/***
+ *
+ *
+ * ------------ MOUNTING PHASE ---------------
+ *
+ * Constructor (dummy)
+ * Render  (dummy)
+ *        <HTML Updated with dummy data/>
+ *
+ * ComponentDidMount
+ *          <API Call />
+ *          <this.setState> -> state variable is updated
+ *
+ * --------------- UPDATING PHASE (Because of setstate (setstate, prop, forceupdate()))
+ *
+ *        Render (API Data)
+ *        <HTML updated with New API data />
+ *        componentDidUpdate
+ *
+ *
+ * */
+
+
+ ------------------------------------------------------------------------------------------
+
+ SOME EXTRA USE FULL INFORMATION: 
+
+ 1. Functional Component: 
+
+ useEffect(() => {
+    // API CALL 
+ })
+
+ when we dont pass the empty dependency, useEffect will run after every render 
+
+ ---------
+
+  useEffect(() => {
+    // API CALL 
+ },[])
+
+ Now it will run the use effect after one initial render
+
+-----------
+
+
+
+ useEffect(() => {
+    // API CALL 
+ },[count1, count2]);
+
+ If we put the dependency in this, it means when ever any of these dependency changes the use effect will re render 
+
+
+ NOW HOW WE DID THIS, IN CLASS BASED COMPONENT 
+
+ So jb component re-render krta tha to componentDidUpdate chlta hai, 
+
+ componentDidUpdate(prevProps, prevState) {
+  if(this.state.count !== prevState.count || this.state.count2 !== prevState.count2) {
+    
+    // Logic
+
+  }
+ }
+
+ -------------------
+
+
+ When will componentWillUnmount called? 
+ S) when ever we changes the component then it will automatically called
+
+ componentDidMount(){ 
+    this.timer = setInterval(() => { // this will use in anywhere in the app
+      console.log('Namaste React component');
+    }, 1000);
+ }
+
+ It will continously printing even if we changes the component, and even we if we again come on this page 
+ then this it interval will printing twice (2 bar chlra hoga setInterval) becauses, when we changes the page, 
+ it is not reloading the page, it changes the component only 
+
+ so how will we clear interval => it is componentWillUnmount
+
+ componentWillUnmount(){
+  clearInterval(this.timer);
+ }
+
+ -------------
+
+ HOW WE WILL DO THIS IN USE EFFECT: 
+
+ useEffect(() => {
+  let timer = setInterval(() => {
+    console.log('Timer start');
+  },1000)
+
+  return () => clearInterval(timer)
+ })
+
+--------------------------------------------------------------------------
+
+NOTE EXAMPLE WHEN SHOULD WE USE CLEAN UP FUNCTION APART FROM SETINTERVAL AND SET TIMEOUT: 
+
+1. Event listeners (resize, scroll, etc.)
+2. API calls or fetch requests
+3. Subscriptions (e.g., WebSockets, Redux)
+4. Timers and animations (setInterval, setTimeout, requestAnimationFrame)
+5. Custom hooks with external dependencies
+6. Intersection observers for visibility tracking
+
+
+
+Eg1: Event Listeners
+When you add event listeners (e.g., for resize or scroll events), you should clean them up when the component unmounts to avoid memory leaks and ensure that listeners are not still active after the component is gone.
+
+const ResizeComponent = () => {
+  useEffect(() => {
+    const handleResize = () => {
+      console.log('Window resized');
+    };
+
+    // Adding event listener
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup function to remove event listener
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []); // Empty dependency array to run only on mount/unmount
+
+  return <div>Resize the window to see changes in the console.</div>;
+};
+
+--------------
+
+Eg2: API CALLS / FETCH REQUEST:
+
+if you make an api call within useeffect, you should cancel the request if the componentt unmount before the request completes, this prevents setting state after a component 
+has unmounted (which can lead to memory leak or error )
+
+
+const FetchDataComponent = () => {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true; // flag to check if the component is still mounted
+
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://api.example.com/data');
+        const result = await response.json();
+
+        if (isMounted) {
+          setData(result);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+
+    // Cleanup function to set the flag to false on unmount
+    return () => {
+      isMounted = false;
+    };
+  }, []); // Empty dependency array means the effect runs only once (on mount)
+
+  return (
+    <div>
+      <h1>Data:</h1>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  );
+};
+
+------------------
+
+3. Subscriptions: (eg websockets, redux etc) -> 
+If you're working with subscriptions (such as listening for updates from a WebSocket or a Redux store), it's important to unsubscribe when the component is unmounted to prevent memory leaks.
+
+import React, { useState, useEffect } from 'react';
+
+const WebSocketComponent = () => {
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    const socket = new WebSocket('ws://example.com/socket');
+
+    // Handling incoming messages
+    socket.onmessage = (event) => {
+      setMessage(event.data);
+    };
+
+    // Cleanup function to close the WebSocket connection
+    return () => {
+      socket.close();
+    };
+  }, []); // Empty dependency array means it only runs once when the component mounts
+
+  return <div>Message from WebSocket: {message}</div>;
+};
+
+export default WebSocketComponent;
+
+--------------------------- finish ------------------------------
