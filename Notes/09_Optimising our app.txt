@@ -1,0 +1,238 @@
+HOW WE CAN WRITE THE CODE IN THE BETTER WAY: 
+
+- Single Responsibility Design Principle 
+means suppose we have a function, or we have a class that should have a single Responsibility
+
+Eg: RestaurantMenu - this component has single Responsibility ie displaying the menu 
+
+BENFITS OF THIS: 
+- break the component in small pieces
+  this is called modularity, means break the code in small pieces, so that component, 
+  will become more maintainable, reusable and testable. 
+
+----------------------------------
+
+IMPLEMENT CUSTOM HOOKS: Hook is utility function given by react to us. 
+
+Eg: RestaurantMenu.jsx -> 
+
+Q) what is the need to choose customHook over here?
+S) we create useRestaurantMenu hook - it calls the api, and give to the component, 
+    now the component will become small, and it has just one Responsibility to display the component to the UI 
+
+
+- useRestaurantMenu -> It basically have one job to fetch the data
+
+How to create a Custom Hook -> they are normal utility functions, 
+when we are creating a file, always start with the file name with 'use' prefix 
+
+- Its job is basically it return the Restaurant information,
+- sabse pehle dekho ki kya chaiye, and kya input parameter aayega and return bnalo pehle  
+
+Eg:
+useRestaurantMenu.js ->
+import { useEffect, useState } from "react";
+import { RESTAURANT_MENU_API } from "../utils/constant";
+
+const useRestaurantsMenu = (resId) => {
+  const [restaurantMenus, setRestaurantMenus] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const data = await fetch(RESTAURANT_MENU_API + resId);
+      const resp = await data.json();
+      console.log("response", resp.data);
+      setRestaurantMenus(resp.data);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+  return restaurantMenus;
+};
+
+export default useRestaurantsMenu;
+
+
+2. RestaurantMenu ->
+const RestaurantMenu = () => {
+  const { resId } = useParams();
+  const restaurantMenus = useRestaurantsMenu(resId);
+
+  const info = restaurantMenus?.cards?.[2].card?.card?.info ?? {};
+  const { name, cuisines, avgRating, sla: slaString } = info;
+
+  const { itemCards } =
+    restaurantMenus?.cards?.[4]?.groupedCard?.cardGroupMap.REGULAR.cards?.[1]
+      ?.card.card ?? {};
+  console.log("Item cards", itemCards);
+
+  return (
+    <div className="restaurantMenu">
+      <h2 className="restaurantHeading">{name}</h2>
+      <h3>{avgRating}</h3>
+
+      <p>{cuisines?.join(", ")}</p>
+      <h2 style={{ margin: "1rem 0" }}>Menu:</h2>
+      <ul style={{ listStyleType: "none" }}>
+        {itemCards?.map((elem, index) => {
+          return (
+            <div key={index}>
+              <li>
+                {elem?.card?.info?.name} -{" "}
+                {elem?.card?.info?.price || elem?.card?.info?.defaultPrice}
+              </li>{" "}
+            </div>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
+
+----------------------------------------------------------
+
+
+2. ONLINE AND OFFLINE INTERNET FEATURE: (by using custom hook)
+
+so for that, we are using eventListner ie "online" (browser event) which accepts a callback function 
+and return the boolean value.
+
+so for that we will create custom hook. 
+- custom hook -> think like, ki input parameter me kuch nhi aayega and humko kya return krna hai status ki online hai ya nahi 
+  Note: - we can use useeffect inside custom hook, but in normal javascript function we can not use that
+
+
+import { useEffect, useState } from "react";
+import { RESTAURANT_MENU_API } from "../utils/constant";
+
+const useRestaurantsMenu = (resId) => {
+  const [restaurantMenus, setRestaurantMenus] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const data = await fetch(RESTAURANT_MENU_API + resId);
+      const resp = await data.json();
+      console.log("response", resp.data);
+      setRestaurantMenus(resp.data);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+  return restaurantMenus;
+};
+
+export default useRestaurantsMenu;
+
+
+------------
+
+To use that hook ->
+
+- const onlineStatus = useOnlineStatus(); // import this hook. 
+-   if (onlineStatus === false) {
+    return (
+      <h1>Something went wrong... Please check your Internet connection</h1>
+    );
+  }
+
+
+-----------------------------------------------------------------------------------
+
+
+OPTIMISING THE APP MORE: 
+
+When we are building the large scale application, there are 1000's of component 
+they are nested on so many levels, then the performance of the application are not good. 
+
+so how to make app performance at that time, when the application is very huge. 
+
+PROBLEM WHILE CREATING THE LARGE SCALE APP: 
+
+Q) whenever we develop the react application?
+S) Parcel is a bundler which bundle all the files and generate the single file[dist folder me jo hota hai]
+
+-> In network tab (when we inspect) -> select JS (fetch/xhr ke sath me) , then we can see there is only one file
+Q) so is it good if there is only one js file over there?
+S) No, actually , eg: when we open the website like makemytrip which is very big website, and there multiple components are there, 
+so if we load all the component in one single javascript file, the size of the file is very big, 
+so instead of this single file hmko multiple files me break krna hoga, to make our website faster and production ready. 
+
+- so break down the app in the smaller pieces , means not a single javascript file, instead of one file we can have multiple js file, 
+to make our website fast and optimize 
+
+Q) can we do Something that our app dont have single javascript file, instead of one we have mulitple smaller javascript files? 
+S) so there are 2 options: 
+1. bundling -> should we do this? yes, but suppose if we have 1000 component, toh humko 1000 files nahi chaiye, issue hmare browser ko hi jyda kaam krna pdhega 
+2. sare component, 1 hi file me daal do which is also not true
+
+so what we have to do is : WE CAN MAKE SMALLER BUNDLES OF THESE FILES, THIS PROCESS IS KNOWN AS 
+CHUNKING, CODE SPLITTING, DYNAMIC LOADING, LAZZY LOADING, 
+
+-----------------
+Example: MAKE MY TRIP (What can be the smaller chunks inside the make my trip website)
+        - how to make smaller bundles and when to make smaller bundles, what should be there in smaller bundles 
+
+        - so we have to do is logic seperation of bundles, means a bundle should have enough code for a feature,
+         and then we can split the bundles into the logical chunks
+
+
+        - so bundle components just for flights
+        - make a bundle for homestays (jisme sare component aayege isme)\
+        - suppose 1000 component hai puri website me, and flight have 100 component, homestays also have 100 component, and so on.. 
+        - so there are 10 files or bundles
+        - so isliye js file jo hogi, uska size kam hoga. 
+
+HOW TO DO THIS IN OUR APP: 
+
+- let us asume, our app also start selling groceries and food, 
+  means navbar me 1 button hai ie groceries, uspr click krke hm groceries pr aagye, and then  
+  it can have 10 component also, and food also have 10 component, 
+  so hm 2 bundle bnayege
+
+  so humko logically seperate krna hoga, ie grocery wala jo hai vo different bundle se aana chaiye and 
+  food wala different component se. 
+
+
+  - so jidr Grocery ko hum import kr rahe hai, ie in app.js ->
+    import Grocery from "./components/Grocery"; // YE AISE IMPORT NAHI KREGE, ISKO IMPORT KREGE BY USING LAZY LOADING....
+
+    Ex when our app load initially, it will not load the code for grocery, only when we go to grocery page, 
+    then only the grocery code will be there in our app , 
+   
+    so HOW DO WE IMPORT THE LAZY COMPONENT:
+    const Grocery  = lazy(() => import('./components/Grocery')); // lazy function comes from react which accept a callback function and inside this we have to pass the Path of the component. 
+
+    -> so Abhi agr hum Grocer pr click krege toh error ayega ie 'hook.js:608 React Router caught the following error during render Error: A component suspended while responding to synchronous input.
+     This will cause the UI to be replaced with a loading indicator. To fix, updates that suspend should be wrapped with startTransition.' 
+     because jab hum HOme page par honge, tb hmare paas Grocery ka code hi nahi hoga, it will take some time to get the data
+     so thats why React suspended its loading, so how do we fix this 
+     'we will use 'SUSPENSE' Which is given by react
+
+    -> 1. So how we import this: 
+    const Grocery = lazy(() => import("./components/Grocery"));
+
+    -> 2. where this component is being used put it like below:
+        {
+        path: "/grocery",
+        element: (
+          <Suspense fallback={<h1>Loading....</h1>}> // Fallback, it accepts JSX, means jab tak grocery component load ho raha hai tab tak suspense chl jayega
+            <Grocery />
+          </Suspense>
+        ),
+      },
+
+
+  ------------------------------- finish -------------------------

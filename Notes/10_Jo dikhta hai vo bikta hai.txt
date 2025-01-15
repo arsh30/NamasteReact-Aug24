@@ -1,0 +1,49 @@
+HOW TO STYLE OUR CODE: 
+
+1st way of Writing css: 
+    - we have index.css (all css in this file , easier way to do this, like a normal css)
+
+2nd way we can use SaSS and ScSS:  (Not a recommend way, because company dont use this)
+
+3rd way of writing css:
+    - use Styled components library (We can use this)
+
+4th way of writing css (Css library and framework, most companies use this): 
+    - chakra ui, ant Design (mostly used), matiarial ui (mostly used), bootstrap,  (We get pre build component, and use in our component)
+    - Tailwind css (we will use this, latest css framework , mostly developer use this nowadays)
+
+---------------------------------------------------------------------------------------
+
+
+Q) WHAT IS TAILWIND CSS? 
+S) Tailwind css - it is utility first css framework, means we can make website without leaving HTML, 
+    direct inline class denge , then it will apply
+
+
+1. 1ST WAY TO CONFIGURE IN OUR REACT, (It works with all other ui framework, normal HTML)
+
+    - go to tailwindcss.com 
+    - In framework Guides -> choose Parcel (because our project used this)
+        - npm install -D tailwindcss postcss [postcss, it is tool for transforming css with javascript]
+        - npx tailwindcss init [this will create a configuration file for tailwind.config.js]
+
+    - create a configuration file also for POST CSS: 
+            - Create a '.postcssrc' At root Level. (because parcel need a postcssrc to understand the tailwind)
+                    - {
+                            "plugins": {
+                                "tailwindcss": {}
+                            }
+                      }
+
+
+
+    - Inside tailwind.config.js -> add this in content ie:
+            -  content: [
+                    "./src/**/*.{html,js,ts,jsx,tsx}", // means all the files where tailwind we can use this
+                    // means inside the src folder -> koi bhi folder ho -> jiski extension .html,.js, .ts, .jsx, .tsx ho usme hm tailwind ki class use kr skte hai
+                ],
+
+    - In Index.css -> add the below lines: 
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;

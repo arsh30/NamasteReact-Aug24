@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import RestaurantCard from "./RestaurantCard";
 import { resData } from "../utils/data.js";
 import { API_URL } from "../utils/constant.js";
 import Shimmer from "./Shimmer.jsx";
 import { Link } from "react-router-dom";
+import useOnlineStatus from "../hooks/useOnlineStatus.js";
 
 const Body = () => {
+  const onlineStatus = useOnlineStatus();
   const [listOfRestaurants, setListOfRestaurants] = useState([]);
   const [originalListOfRestaurants, setOriginalListOfRestaurants] = useState(
     []
@@ -49,6 +51,12 @@ const Body = () => {
 
   if (errorMessage !== null) {
     return <h1 style={{ textAlign: "center" }}>{errorMessage}</h1>;
+  }
+
+  if (onlineStatus === false) {
+    return (
+      <h1>Something went wrong... Please check your Internet connection</h1>
+    );
   }
 
   return loading ? (
