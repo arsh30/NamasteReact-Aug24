@@ -47,3 +47,5 @@ S) Tailwind css - it is utility first css framework, means we can make website w
         @tailwind base;
         @tailwind components;
         @tailwind utilities;
+
+------------------------------------------- FINISH -------------------------------

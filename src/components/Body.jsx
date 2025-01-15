@@ -63,9 +63,9 @@ const Body = () => {
     <Shimmer />
   ) : (
     <div className="body">
-      <div className="filter">
+      <div className="m-5 flex items-center gap-16">
         <button
-          className="filter-btn"
+          className="p-3 outline-none rounded-xl border-none cursor-pointer bg-[crimson] text-white transition-all duration-300"
           onClick={() => {
             const filteredResults = listOfRestaurants?.filter((res) => {
               return res?.info?.avgRating > 4.3;
@@ -77,10 +77,10 @@ const Body = () => {
           Top Rated Restaurants
         </button>
 
-        <div className="search-container">
+        <div className="flex">
           <input
             type="text"
-            className="searchInput"
+            className="p-2 outline-none mr-3 rounded-lg border-2 w-[100%]"
             placeholder="Enter search"
             name="search"
             value={searchTxt}
@@ -91,7 +91,7 @@ const Body = () => {
           </button>
         </div>
       </div>
-      <div className="res-container">
+      <div className="px-10 flex flex-wrap items-center gap-6">
         {listOfRestaurants?.map((resData) => {
           return (
             <Link

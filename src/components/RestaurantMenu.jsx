@@ -15,8 +15,8 @@ const RestaurantMenu = () => {
   console.log("Item cards", itemCards);
 
   return (
-    <div className="restaurantMenu">
-      <h2 className="restaurantHeading">{name}</h2>
+    <div className="max-w-[80%] shadow-lg mx-auto mt-8 p-5 rounded-xl">
+      <h2 className="mb-8 font-[700] text-xl">{name}</h2>
       <h3>{avgRating}</h3>
 
       <p>{cuisines?.join(", ")}</p>
