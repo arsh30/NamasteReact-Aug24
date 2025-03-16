@@ -1,11 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { LOGO_URL } from "../utils/constant";
 import { Link } from "react-router-dom";
 import useOnlineStatus from "../hooks/useOnlineStatus";
+import UserContext from "../utils/UserContext";
 
 const Header = () => {
   const [btnName, setBtnName] = useState("Login");
   const onlineStatus = useOnlineStatus();
+
+  // how to access the context
+  const data = useContext(UserContext); // it return the object in which the key is present
+  const { loggedInUser } = data;
   return (
     <div className="flex items-center justify-between px-12 shadow-xl">
       <div className="logo-container">
@@ -37,6 +42,8 @@ const Header = () => {
           >
             {btnName}
           </button>
+
+          <li className="px-4 font-bold">{loggedInUser}</li>
         </ul>
       </div>
     </div>

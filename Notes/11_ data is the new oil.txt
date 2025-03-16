@@ -1,0 +1,641 @@
+HOW TO MANAGE DATA IN THE REACT:
+
+1. HIGHER ORDER COMPONENTS : 
+Higher order component is a function which takes a component and return a component
+
+Q) what is the purpose of this Higher order component?
+S) Example: it takes a component in input, and if we want to do some modifications inside that, 
+then we return a new component, with latest functionality, this is called HIGHER ORDER COMPONENT.
+
+EXAMPLE:
+In our food app, there are list of restaurants, and we want to Add promoted label on some cards, 
+[because cards ki UI same hai only difference is we are adding the Promoted label onto it.]
+
+-> High Order components are pure components, it will not change the behaviour of the input component, that we got it inside the  
+parameter, (jo bhi component recieve hua hai usko hum change nahi krege, we can modify the component directly)
+
+1. const RestaurantCard = (props) => { // We will Not Modify This
+  const { resData } = props; // props are object
+  // const { name, cuisines, avgRating, costForTwo, sla } = resData?.info;
+
+  // if (!resData || !resData.info) {
+  //   return <h1>Loading....</h1>;
+  // }
+  const { name, cuisines, avgRating, costForTwo, sla } = resData?.info;
+
+  return (
+    <div
+      className="w-[300px] h-[410px] shadow-xl cursor-pointer bg-[#f0f0f0] p-5 overflow-hidden
+    mx-[5px] my-5 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg"
+    >
+      <img
+        className="w-full h-[50%] rounded-tl-lg rounded-tr-lg transition-all duration-300 hover:scale-110"
+        src={`${imageCDNUrl}/${resData?.info?.cloudinaryImageId}`}
+        alt="foodImg"
+      />
+      <h3 className="mb-[10px] mt-[15px]">{name}</h3>
+      <h4 className="mb-[10px]">{cuisines.join(", ")}</h4>
+      <h4 className="mb-[10px]">{avgRating} stars</h4>
+      <h4 className="mb-[10px]"> {costForTwo}</h4>
+      <h4 className="mb-[10px]">{sla?.slaString}</h4>
+    </div>
+  );
+};
+
+// CHANGES IN THIS ONLY, AND WE ONLY USING RESTUARANT CARD:
+export const WithPromotedLabel = (RestaurantCard) => {
+  return (props) => {
+    // Here we are returning a new component
+    return (
+      // here we are return the JSX, because a component return piece of JSX.
+      <div>
+        <label className="absolute bg-black text-white rounded-lg p-2 z-40">
+          Promoted
+        </label>
+        <RestaurantCard {...props} /> // Passing all the props that it recieves and Three dots means same key pass hojayegi in the RestaurantCard ie resData={resData}
+        {/* 
+            passing the same data jo jo pehle Restaurant card recieve krra tha, idr kuch bhi change nahi krege, bas data hum bhj skte hai, 
+            modification nahi kar skte existing card me 
+        */}
+      </div>
+    );
+  };
+};
+
+------
+
+2.  WHERE WE ARE USING THIS: (in body)
+
+- import this:
+- const RestaurantCardWithPromotedLabel = WithPromotedLabel(RestaurantCard); // with promoted label is HOC, passing the RestaurantCard component, it will return the new component which has label inside that,
+                                                                              //  so basically RestaurantCardWithPromotedLabel component has a label inside this
+
+
+- {listOfRestaurants?.map((resData) => {
+          return (
+            <Link
+              to={`restaurants/${resData?.info?.id}`}
+              key={resData?.info?.id}
+            >
+              {resData?.info?.avgRating > 4.3 ? (
+                <RestaurantCardWithPromotedLabel resData={resData} /> // same data pass krege because RestaurantCard ko require hoga
+              ) : (
+                <RestaurantCard resData={resData} />
+              )}
+            </Link>
+          );
+        })}
+
+
+--------------------------ALL RELATED TO DATA OF OUR REACT APP (Control uncontroll comp , lifting stateUp) -----------------------------------------
+
+- Important part of react application is to manage the Data 
+- all the react application has 2 layer ie UI Layer, Data Layer, (Ui layered is powered by data layer)
+- this data layer contains things like state,props, local variable,, and the Ui layered is powered by data layer 
+- If we know how to manage the data layer, the application will be super fast. major part is to handle the Data layer 
+- The UI layer is the code we write inside the JSX, data layer is, state, props, {} brackets use for javascript which is used for modifiying the 
+  data layer.
+
+---------------------------------- ACCORDION FEATURE ---------------------------------------
+
+
+const RestaurantCategoryAccordion = ({ data }) => {
+  const [isDisplay, setIsDisplay] = useState(false);
+  const { title, itemCards } = data;
+  return (
+    <div className="w-full shadow-md mb-8 py-2 px-4 rounded-xl bg-gray-100">
+      {/* Header */}
+      <div
+        onClick={() => setIsDisplay(!isDisplay)}
+        className="w-full flex justify-between"
+      >
+        <span className="font-bold cursor-pointer">
+          {title} {itemCards?.length > 0 ? `(${itemCards?.length})` : null}
+        </span>
+        <span>{itemCards?.length > 0 ? "⬇️" : null}</span>
+      </div>
+      {/* Accordion Body */}
+      {itemCards?.length > 0 && isDisplay ? (
+        <ItemList items={itemCards} />
+      ) : null}
+    </div>
+  );
+};
+
+// Accordion Body
+const ItemList = ({ items }) => {
+  console.log("iteemss ---> ", items);
+
+  return (
+    <div className="mt-4">
+      {items.map((elem, index) => {
+        return (
+          <div key={index} className="border-b-8 my-6">
+            <div className="flex justify-between">
+              <span className="font-bold">{elem?.card?.info?.name}</span>
+              <span className="font-bold">{elem?.card?.info?.price}</span>
+            </div>
+            <p className="">{elem.card.info.description}</p>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+export default RestaurantMenu;
+
+
+-----------------------------------EXTENDED FEATURE -----------------------------------------------------
+
+
+If we click on any particular accordion, if previous acc is open it should close previous and open newly open
+
+-> React Dev Tools chrome extension (very very very helpfull for debugging)
+-> It show all the component that we have in our code. (left side jidr sare compoennt render ho rahe hai vo UI layer hai, and right side jidhr state and prop hai ie Data Layer)
+-> Profiler, basically we have to start recording, so jonse jonse page par hum move hue hai vo sab bta dega kidr kidr move hue hai, and kitna time liya hai Load hone me etc, (jo color me honge means vo vo humne trigger kiya hai unpr gye hai means)
+-> components & profilers are there, and suppose 1 page open hai, and uspr saare component aajege, and prop and states bhi jo uss component me use ho rahe hai 
+
+
+-> so it is very tough to debug, because jitne bhi accordion Header hai vo sab apni apni state bna rahe hai
+Eg: recommended Items is controlling the itemList, and Newly Added is not aware what is happening in recommended, 
+so to collapse recommended Items when we click on newly added, 
+
+so for that I want to lift this state to be liftedUp, i dont want to give the power of show and collapse power to Recommended 
+so we have to give the power of this show and collapse to the parent of recommended Items child.
+so instead of declaring state inside the 'RestaurantCategoryAccordion' we have to lift the stateUp, 
+means iske parent (RestaurantMenu) ko state pass krege udr se pass krege, 
+RestaurantMenu ko pass krege power to display or not.
+
+
+-> CONTROL AND UNCONTROLL COMPONENTS,
+Now the RestaurantCategoryAccordion is a controll component, because iska parent isko control krra hai ie RestaurantMenu, 
+pehle it was uncontroll component because earlier it hads its own state, ie parent ko child ka control nahi hai vo khud se control krra hai
+
+
+Example Parent Component: 
+
+
+const RestaurantMenu = () => {
+  const { resId } = useParams();
+  const restaurantMenus = useRestaurantsMenu(resId);
+  const [showIndex, setShowIndex] = useState(null);
+
+  const categories =
+    restaurantMenus?.cards?.[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards?.filter(
+      (elem) => {
+        return elem?.card?.card?.["@type"].includes("ItemCategory");
+      }
+    );
+
+  const handleCategoryClick = (index) => {
+    setShowIndex(index === showIndex ? null : index);
+  };
+  return (
+    <div className="max-w-[50%] mx-auto mt-8 p-5 rounded-xl text-left">
+      {/* CATEGORIES ACCORDION - EACH ACCORDION HAS TITLE, AND THE BODY, WHICH IS COLLAPSABLE */}
+      {categories &&
+        categories.map((elem, index) => {
+          return (
+            // Controll component (because parent is controlling)
+            <RestaurantCategoryAccordion
+              key={index}
+              data={elem?.card?.card}
+              // isDisplay={index === 0 ? true : false} // means agr index 0 hai toh true pass hoye baki false
+              isDisplay={index === showIndex ? true : false}
+              setShowIndex={() => handleCategoryClick(index)} // means jis bhi card par click krege to vo expand ho jayega and is function ko call krege child se, for eg: child 2 par click kiya to uska index number set hojayega
+            />
+          );
+        })}
+    </div>
+  );
+};
+
+
+--- Child Component ---
+
+const RestaurantCategoryAccordion = ({ data, isDisplay, setShowIndex }) => {
+  //   const [isDisplay, setIsDisplay] = useState(false);
+  const { title, itemCards } = data;
+  return (
+    <div className="w-full shadow-md mb-8 py-2 px-4 rounded-xl bg-gray-100">
+      {/* Header */}
+      <div onClick={setShowIndex} className="w-full flex justify-between">
+        <span className="font-bold cursor-pointer">
+          {title} {itemCards?.length > 0 ? `(${itemCards?.length})` : null}
+        </span>
+        <span>{itemCards?.length > 0 ? "⬇️" : null}</span>
+      </div>
+      {/* Accordion Body */}
+      {itemCards?.length > 0 && isDisplay ? (
+        <ItemList items={itemCards} />
+      ) : null}
+    </div>
+  );
+};
+
+
+EG2: lifting State Up Example:
+problem:
+let's say you have two input fields in the children components, and you want to keep track of the values of both inputs in the parent component. When you change the value in ChildA, you need to reflect that change in the parent and update the value in ChildB. How do we do this?
+
+Sol) In React, lifting state up refers to moving the state management from a child component to the parent component so that multiple child components can share and interact with the same state.
+
+HOW TO LIFT STATE UP?
+1. identify the state that needs to be shared: This is the data that will be shared or controlled by parent 
+2. Move the state to the parent component: in parent component create state using useState
+3. Pass the state down to child component as props 
+4. Pass the setter function down as prop to update the state.
+
+Ex:
+const ParenComp = () => {
+  const [inputValue, setInputValue] = useState('');
+  return (
+    <div>
+      <ChildA value={inputValue} onChange={setInputValue}/>
+      <ChildB value={inputValue} /> // Ab agr A me change krege to automatically B me bhi hoga change
+    </div>
+  )
+}
+
+const ChildA = ({value, onChange}) => {
+  return (
+    <label> Input from child A </label>
+    <input type="text" value={value} onChange={(e) => onChange(e.target.value)} /> // Idr se OnChange me data pass ho raha hai 
+  )
+}
+
+const ChildB = ({value}) => {
+  return (
+    <div> 
+      <label>Input from ChildB</label>
+      <input type="text" value={value} readOnly/>
+    </div>
+  )
+}
+------------------------------------ PART 4 (DATA LAYER IE PROP DRILLING) ------------------------------
+
+-> react is one way data flow
+
+when the application grows bigger then the component have in heirarchy order, 
+ex compA and inside that it is calling component B and so on, 
+so to pass the prop from parent to child, that thing is very complex, and is also know as prop drilling, because we have to pass the prop in every child component
+so it is not a good way to do this, 
+
+-> so agr prop pass krne hai upto 1 or 2 level, then it is okay, but suppose data is present somewhere, and humko access krna hai kahin or toh how would we do that? 
+  means some times we need global data that we can access anywhere in the app, so how can we do that? 
+
+  sol) BY using "CONTEXT", So by using react context, we can avoid prop drilling
+
+-> so we use context, which is kind of global place where data is present and anybody can access that.
+Eg: Login feature, theme, 
+
+
+----------SO HOW CAN WE USE CONTEXT ----------------
+
+context solve the problem, of prop drilling, basically we create a central place, and we can get the data through there. 
+
+Note: the data which is being used in multiple places or in future it might be used in multiple places, then only that data we need to store in context 
+
+HOW TO DO THIS: 
+1. so context, is kind of global thing, so we put this inside utils Folder, create file ie userContext (this will keep the information of user)
+
+
+import { createContext } from "react";
+
+/*
+1. In createContext function,we will give some piece of information, that it will hold,
+   it kind of central global object
+*/
+
+const UserContext = createContext({
+  loggedInUser: "Default User",
+});
+
+export default UserContext;
+
+-------
+
+2. How To Recieve that ContextValue ie LoggedInUser in Function Based Component:
+
+const Header = () => {
+  const [btnName, setBtnName] = useState("Login");
+  const onlineStatus = useOnlineStatus();
+
+  // how to access the context
+  const data = useContext(UserContext); // it return the object in which the key is present, We Are Consuming the key
+  const { loggedInUser } = data;
+
+   return (
+    <div className="flex items-center justify-between px-12 shadow-xl">
+         <li className="px-4 font-bold">{loggedInUser}</li>
+    </div>
+   )
+}
+
+
+-----
+
+3. How To Consume this in Class Based Component: 
+// How to get the context in this? because in function component we have hook to recieve that
+// but in class component we can not use hooks , so how can we get this
+
+import UserContext from "../utils/UserContext";
+
+class About extends React.Component {
+  constructor(props) {
+    super(props);
+    // console.log("parent constructor");
+  }
+
+  componentDidMount() {
+    //console.log("parent component did mount");
+  }
+
+  render() {
+    return (
+      <div>
+        <UserContext.Consumer>
+          {/* Consumer will accept a callback function, in which it get the result from context */}
+          {({ loggedInUser }) => <h1 className="font-bold">User: {loggedInUser}</h1>}
+        </UserContext.Consumer>
+       
+        <h2>This is About Component </h2>
+        <UserClass name={"Arsh Class based Component"} />
+      </div>
+    );
+  }
+}
+
+-------
+
+
+4. How To Pass The Value in EveryWhere in the App also If we need to update the loggedInUser, Then how will it update from all places: 
+
+const AppLayout = () => {
+  const [userName, setUserName] = useState(null);
+
+  useEffect(() => {
+    // make an api and fetch the data and set userName
+    const data = {
+      name: "Arsh",
+    };
+
+    setUserName(data.name);
+  }, []);
+
+  // Now update the Context every where in the project,
+  // Note: suppose agr Header ko hum, sirf UserContext.Provider se wrap krte toh sirf Header me hi use hota vo
+  // Note2 : Agr nested Provider use krte to kya hota hai, so Header ki value sirf Elon musk hoti hai, and usse bhar jo hai Arsh hoti value
+  // Eg
+  //  return (
+  //    <UserContext.Provider value={{ loggedInUser: userName }}>
+  //      <div className="App">
+  //        <UserContext.Provider value={{ loggedInUser: "Elon musk" }}>
+  //          <Header />
+  //        </UserContext.Provider>
+  //        <Outlet />
+  //      </div>
+  //    </UserContext.Provider>
+  //  );
+
+  return (
+    <UserContext.Provider value={{ loggedInUser: userName, setUserName }}> // We have pass the setUserName every where in the app, now how do we update that
+      <div className="App">
+        <UserContext.Provider value={{ loggedInUser: "Elon musk" }}>
+          <Header />
+        </UserContext.Provider>
+        <Outlet />
+      </div>
+    </UserContext.Provider>
+  );
+};
+
+------------------------
+
+
+HOW TO USE THAT SETTER FUNCTION: 
+
+const Body = () => {
+  const onlineStatus = useOnlineStatus();
+  const { loggedInUser, setUserName } = useContext(UserContext);
+
+   return (
+    <div className="body">
+      <div className="flex">
+          <label>User Name</label>
+          <input
+            type="text"
+            className="p-2 outline-none mr-3 rounded-lg border-2 w-[100%]"
+            placeholder="Set UserName"
+            name="loggedInUser"
+            value={loggedInUser}
+            onChange={(e) => setUserName(e.target.value)} // Here We are updating the context Name
+          />
+      </div>
+    </div>
+   )
+}
+
+---------------------------------------------------- BETTER WAY TO USE THE USE CONTEXT --------------------------------------------------------
+
+STEPS:
+
+1. Create Context: This will be the object that hold your state and provide it to component. 
+2. Create A context Provider: provider will be used to wrap your app and pass the state to the component 
+3. Use the context in child component: Inside component that needs the global state, you will use the useContext hook to access the state \
+4. update the context state: you can update the state in your provider and it will be reflected all accross the components that consume that context. 
+
+
+Ex:
+step 1: create UserContext.js -> First, create a new file called UserContext.js to define your context and provider.
+
+import React, { createContext, useState } from 'react';
+
+// Create a context for user data
+const UserContext = createContext();
+
+// Create a provider component
+const UserProvider = ({ children }) => {
+  // Define the initial state (you can set it as null or with any user data)
+  const [user, setUser] = useState({
+    name: 'John Doe',
+    email: 'john@example.com',
+  });
+
+  // The provider component will pass the state and updater function to the rest of the app
+  return (
+    <UserContext.Provider value={{ user, setUser }}>
+      {children}
+    </UserContext.Provider>
+  );
+};
+
+export { UserContext, UserProvider };
+
+
+-----
+
+Step 2: Wrap the App with the Provider
+
+-> Now that we have the context and provider, we need to wrap the entire app with the UserProvider. This ensures that any component in your app can access the UserContext.
+-> In index.js or App.js, wrap your app with the UserProvider:
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import { UserProvider } from './UserContext';  // Import the provider
+
+// Wrap the entire app with UserProvider
+ReactDOM.render(
+  <UserProvider>
+    <App />
+  </UserProvider>,
+  document.getElementById('root')
+);
+
+-----
+
+Step 3: Consume the Context in Child Components
+
+-> Now, inside any component that needs access to the user state, you can use the useContext hook to read and update the state. 
+
+import React, { useContext } from 'react';
+import { UserContext } from './UserContext';  // Import the context
+
+const UserProfile = () => {
+  // Use the useContext hook to access the user state
+  const { user, setUser } = useContext(UserContext);
+
+  const updateUser = () => {
+    // Update the user state using the setUser function
+    setUser({
+      name: 'Jane Doe',
+      email: 'jane@example.com',
+    });
+  };
+
+  return (
+    <div>
+      <h2>User Profile</h2>
+      <p>Name: {user.name}</p>
+      <p>Email: {user.email}</p>
+      <button onClick={updateUser}>Change User</button>
+    </div>
+  );
+};
+
+export default UserProfile;
+
+
+-------------------------------- Example 3 ----------------------------------
+
+
+Managing Multiple States with useContext like For Theme, User Authentication, Language Preference
+
+Step1: Create a Context with Multiple States
+
+import React, { createContext, useState } from 'react';
+
+// Create the Context for multiple states
+const AppContext = createContext();
+
+const AppProvider = ({ children }) => {
+  // Define multiple states
+  const [theme, setTheme] = useState('light');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [language, setLanguage] = useState('en');
+
+  // Functions to update these states
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
+
+  const login = () => {
+    setIsAuthenticated(true);
+  };
+
+  const logout = () => {
+    setIsAuthenticated(false);
+  };
+
+  const changeLanguage = (newLanguage) => {
+    setLanguage(newLanguage);
+  };
+
+  return (
+    <AppContext.Provider
+      value={{
+        theme,
+        isAuthenticated,
+        language,
+        toggleTheme,
+        login,
+        logout,
+        changeLanguage,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
+
+export { AppContext, AppProvider };
+
+
+------------
+
+Step 2: Wrap Your Application with the Provider
+
+import React from 'react';
+import { AppProvider } from './AppProvider';
+import Dashboard from './Dashboard';
+
+const App = () => {
+  return (
+    <AppProvider>
+      <Dashboard />
+    </AppProvider>
+  );
+};
+
+export default App;
+
+------------
+
+Step 3: Using useContext in Components
+
+import React, { useContext } from 'react';
+import { AppContext } from './AppProvider';
+
+const Dashboard = () => {
+  const {
+    theme,
+    isAuthenticated,
+    language,
+    toggleTheme,
+    login,
+    logout,
+    changeLanguage,
+  } = useContext(AppContext);
+
+  return (
+    <div style={{ backgroundColor: theme === 'light' ? '#fff' : '#333', color: theme === 'light' ? '#000' : '#fff' }}>
+      <h1>{isAuthenticated ? 'Welcome Back!' : 'Please Log In'}</h1>
+      <p>Current Language: {language === 'en' ? 'English' : 'Español'}</p>
+      <button onClick={toggleTheme}>Toggle Theme</button>
+      {!isAuthenticated ? (
+        <button onClick={login}>Log In</button>
+      ) : (
+        <button onClick={logout}>Log Out</button>
+      )}
+      <button onClick={() => changeLanguage(language === 'en' ? 'es' : 'en')}>
+        Switch Language
+      </button>
+    </div>
+  );
+};
+
+export default Dashboard;
+
+------------------------------------------ FINISH ------------------------------------

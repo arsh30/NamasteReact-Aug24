@@ -14,7 +14,7 @@ const useRestaurantsMenu = (resId) => {
       setLoading(true);
       const data = await fetch(RESTAURANT_MENU_API + resId);
       const resp = await data.json();
-      console.log("response", resp.data);
+      // console.log("response", resp.data);
       setRestaurantMenus(resp.data);
     } catch (error) {
       setLoading(false);
