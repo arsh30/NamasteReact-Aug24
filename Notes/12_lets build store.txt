@@ -1,0 +1,233 @@
+--- WE WILL LEARN REDUX (COMES UNDER DATA LAYER) ----
+
+Note: 
+1. Redux is not mandatory in every app. when we build large scale application then only need redux, 
+2. React and Redux both are different library. 
+3. Redux is not the only library that do State Management, we have another library that offers same job ie ZUSTAND. 
+
+------
+
+ADVANTAGES OF USING REDUX: 
+
+1. When we have multiple nested components (jidr props hmko nested child me paas krne padh rahe hai then we need redux, so iski help se easily data manage ho jata hai)
+2. Redux offers easy debugging like we have react dev tools, we have redux dev tools also. 
+
+--------
+
+REDUX START (RTK) -> 
+
+1. So redux offers state management, we can create a cenetralised store and then we can do CRUD operation on that if we want, 
+2. We have 2 libraries that is React-Redux and Redux Toolkit
+    React Redux -> this library basically a bridge between react and redux 
+    Redux Toolkit -> newer way of writing redux, jo pehle hum use krte the, ie vanilla redux which was tough to write. 
+
+-------
+
+ARCHITECTURE OF REDUX (Redux Toolkit): 
+
+so basically what we built is -> cart feature, when we click on cart button, on click on add to cart, 
+the count in the header will increase to 1 2 3.. so on, and we will create a cart page as well
+
+
+ARCHITECTURE: 
+HOW TO WRITE DATA IN THE REDUX: 
+
+1. We have multiple slices in our redux store. 
+2. so when we click on Add button -> it dispatch an Action -> which calls a reducer function (contains logic) -> then it will update the slice (store) => [WRITING THE DATA IN THE REDUX STORE]
+3. So in our Cart Icon (header) -> it subscribe to our store (slice) using selector -> so jabhi data update hoga store me toh to header component (Cart) automagically update ho jayega. => [READING DATA FROM THE STORE]
+
+---------------- PRACTICAL ---------
+
+-> Install libraries: @reduxjs/toolkit react-redux
+
+1. Create our Store
+
+-> in utils folder - create file -> appstore.js 
+
+import { configureStore } from "@reduxjs/toolkit";
+
+const appStore = configureStore({
+  reducer: {
+    // we will add the slices in this
+    // it contains multiple slices
+  },
+});
+export default appStore;
+
+-------------
+
+2. connect our store to our App (make bridge)
+
+-> at the root level of our app ie App.js or index.js (provide store to our app)
+
+const AppLayout = () => {
+  return (
+    <Provider store={appStore}> // IDR SE WRAP, SO ISKE ANDR JO JO HOGA SAB KE ANDR DATA FLOW HOJAYEGA...
+      <UserContext.Provider value={{ loggedInUser: userName, setUserName }}>
+        <div className="App">
+            <Header />
+          <Outlet />
+        </div>
+      </UserContext.Provider>
+    </Provider>
+  );
+};
+
+------------
+
+
+3. Create Slice (cart slice)
+
+import { createSlice } from "@reduxjs/toolkit";
+
+const cartSlice = createSlice({
+  name: "cart",
+  initialState: {
+    items: [],
+  },
+  reducers: {
+    addItem: (state, action) => {
+      // addItemToCart is basically "ACTION",
+      // Reducer function is the arrow function (jo hum use kr rahe hai)
+      // so jo reducer function hai isme logic to update our state.
+      // Here we are Mutating the state
+      state.items.push(action.payload);
+    },
+    removeItem: (state) => {
+      // write the logic properly, multiple items honge to action.payload filter krke remove krege
+      state.items.pop();
+    },
+    clearCart: (state) => {
+      state.items.length = 0;
+    },
+  },
+});
+
+export const {addItem,removeItem,clearCart} = cartSlice.actions;
+export default cartSlice.reducer; 
+
+Note: 
+1. This createSlice function will return the Object in the cartSlice 
+2. cartSlice object will look like 
+{
+    actions: {
+        addItem,
+        removeItem
+    },
+    reducer
+}
+
+3. We can not do like this "state.items = [];"
+
+-----------
+
+4. ADD SLICE TO OUR STORE: 
+
+import cartReducer from "../redux/cartSlice";
+
+const appStore = configureStore({
+  reducer: { // this reducer is whole app reducer, it contains multiple reducer, jo slice se return krege
+    // we will add the slices in this
+    // it contains multiple slices
+    cart: cartReducer,
+    // user:userReducer
+  },
+});
+export default appStore;
+
+
+---------------------------- READ DATA AND DISPATCH ACTION --------------------------
+
+5. dispatch Action -> basically store me crud Perform krna kuch 
+
+const ItemList = ({ items }) => {
+  const dispatch = useDispatch();
+  const handleCart = (item) => {
+    dispatch(addItem(item));
+    // {payload: "data"}
+  };
+  return (
+    <div className="mt-4"></div>
+  )
+}
+
+----------
+
+6. read data from slice (store) using Selector
+
+const Header = () => {
+  const cartItems = useSelector((store) => store.cart.items); // READING DATA FROM STORE (SUBSCRIBING THE STORE)
+  return (
+    <div className="flex items-center justify-between px-12 shadow-xl">
+      <div className="logo-container">
+        <img className="w-[100px]" src={LOGO_URL} />
+      </div>
+    </div>
+  )
+}
+
+-------------------
+
+NOTE: 
+
+1. when we are doing selector (make sure we are doing the right portion of the store)
+ // WRONG -> useSelector((store) => store); // idr sare store ko subscribe kr rahe hai, Kahin par bhi agr change hoga to idr get krega, which is big performance loss. 
+ // RIGHT -> useSelector((store) => store.cart.items); // here we are subscribing small portion of store, so jo items change honge tabhi ye subscribe hoga bass.. 
+
+
+2. In appStore.js -> usme "reducer" hota hai which contains (multiple reducers) 
+   but when we create Slice, then there is "Reducers" 
+
+   and jab slice, se export krege to single "reducer" return krege. 
+
+
+3. In reducer functions: 
+
+    addItem: (state, action) => {
+      // Vanilla Redux (Older) Redux says => DON'T MUTATE STATE, AND RETURNING WAS MANDATORY,  so agr humko krna hota kuch update state me to how we do is: 
+      // const newState = [...state];
+      // newState.items.push(action.payload)
+      // return newState;
+
+
+      // In RTK, 
+      // we have to Mutate the state, and returning is not Mandatory, Behind the scene Redux is Actually doing same thing that is in Vanilla Redux
+      state.items.push(action.payload);
+    },
+
+
+4. Reason, Jb humne clearCart me direct kyu nahi kiya state = []; ?? REASON 
+Because -> 
+
+  // originalState = ["pizza"];
+ clearCart: (state) => { //  Here state is Local Variable
+      console.log(state); // [pizza] , This console will not print actual data, current use krna pdhega to see the actual data
+      console.log(current(state)); // To view the store, humko current use krna pdhega
+      state = []; // So Agr hum ye krte hai toh current Local State update hogi, jo original state hai vo update nahi hogi, 
+      console.log(state); // op []
+      
+      // SO AGR HUMKO ORIGINAL STATE UPDATE KRNI HAI TO STATE KO MUTATE KRNA PDHEGA
+      // BECUSE RTK SAYS, EITHER MUTATE THE EXISTING STATE OR RETURN A NEW STATE. 
+      // SO BHI HUM REDUCER SE RETURN KRWAYEGE VO ORIGINAL STATE JO HOGI USKO REPLACE KRDEGA. 
+
+      state.items.length = 0; // or return {items: []}; -> This we can do, jo full state hai usko remove krdiya
+  },
+
+
+5. Install Redux Dev Tools (use full in debugging) (last 15 min)
+  In redux extension, INIT (means initialise -> On left side, sare logs show honge) 
+  cart/addItem (slice/action)
+
+  - when we load the page - go to state option (udr hmara slice and state dikhegi which should be empty)
+  - Trace Option -> means code me kidr call hua hai ye function 
+  - Action -> jidr se action trigger hua hai (slice)
+  - Jo scroll and play bar hai, usse agr scroll krege to hum replay krke dekh skte hai ki kya kya hua tha. 
+
+
+6. Important -> In older version of redux we used middle wares, ie redux thunk for async operation, suppose we want to make an api call 
+and store in redux store, there is a coding practice that is middleware and thunk.  
+
+RTK QUERY: 
+
+have to study..........
+------------------------- finish ------------------------

@@ -31,7 +31,7 @@ const Body = () => {
       const response = await data.json();
       const restaurants =
         response?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle
-          ?.restaurants;
+          ?.restaurants ?? [];
 
       setListOfRestaurants(restaurants);
       setOriginalListOfRestaurants(restaurants);
@@ -76,6 +76,7 @@ const Body = () => {
             const filteredResults = listOfRestaurants?.filter((res) => {
               return res?.info?.avgRating > 4.3;
             });
+            
             setListOfRestaurants(filteredResults);
           }}
         >
@@ -87,6 +88,7 @@ const Body = () => {
             type="text"
             className="p-2 outline-none mr-3 rounded-lg border-2 w-[100%]"
             placeholder="Enter search"
+            data-testid="SearchInput"
             name="search"
             value={searchTxt}
             onChange={(e) => setSearchTxt(e.target.value)}

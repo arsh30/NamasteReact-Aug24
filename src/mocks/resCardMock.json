@@ -1,0 +1,98 @@
+{
+    "info": {
+        "id": "590928",
+        "name": "Nomad Pizza - Traveller Series",
+        "cloudinaryImageId": "RX_THUMBNAIL/IMAGES/VENDOR/2025/5/5/4ae4c30f-08a5-490d-810f-db3e77e54450_590928.jpg",
+        "locality": "Jain Mandir Marg",
+        "areaName": "Connaught Place",
+        "costForTwo": "₹850 for two",
+        "cuisines": [
+            "Pizzas",
+            "Fast Food",
+            "Desserts",
+            "Beverages"
+        ],
+        "avgRating": 4.1,
+        "parentId": "251919",
+        "avgRatingString": "4.1",
+        "totalRatingsString": "535",
+        "sla": {
+            "deliveryTime": 33,
+            "lastMileTravel": 3.8,
+            "serviceability": "SERVICEABLE",
+            "slaString": "30-35 mins",
+            "lastMileTravelString": "3.8 km",
+            "iconType": "ICON_TYPE_EMPTY"
+        },
+        "availability": {
+            "nextCloseTime": "2025-07-23 04:00:00",
+            "opened": true
+        },
+        "badges": {
+            "imageBadges": [
+                {
+                    "imageId": "Rxawards/_CATEGORY-Gourmet.png",
+                    "description": "Delivery!"
+                },
+                {
+                    "imageId": "newg.png",
+                    "description": "Gourmet"
+                }
+            ]
+        },
+        "isOpen": true,
+        "type": "F",
+        "badgesV2": {
+            "entityBadges": {
+                "imageBased": {
+                    "badgeObject": [
+                        {
+                            "attributes": {
+                                "description": "Delivery!",
+                                "imageId": "Rxawards/_CATEGORY-Gourmet.png"
+                            }
+                        },
+                        {
+                            "attributes": {
+                                "description": "Gourmet",
+                                "imageId": "newg.png"
+                            }
+                        }
+                    ]
+                },
+                "textBased": {},
+                "textExtendedBadges": {}
+            }
+        },
+        "aggregatedDiscountInfoV3": {
+            "header": "ITEMS",
+            "subHeader": "AT ₹449"
+        },
+        "differentiatedUi": {
+            "displayType": "ADS_UI_DISPLAY_TYPE_ENUM_DEFAULT",
+            "differentiatedUiMediaDetails": {
+                "lottie": {},
+                "video": {}
+            }
+        },
+        "reviewsSummary": {},
+        "displayType": "RESTAURANT_DISPLAY_TYPE_DEFAULT",
+        "restaurantOfferPresentationInfo": {},
+        "externalRatings": {
+            "aggregatedRating": {
+                "rating": "3.9",
+                "ratingCount": "33"
+            },
+            "source": "GOOGLE",
+            "sourceIconImageId": "v1704440323/google_ratings/rating_google_tag"
+        },
+        "ratingsDisplayPreference": "RATINGS_DISPLAY_PREFERENCE_SHOW_SWIGGY"
+    },
+    "analytics": {
+        "context": "seo-data-e28f41f4-ba4e-483e-bf47-62429e650bff"
+    },
+    "cta": {
+        "link": "https://www.swiggy.com/city/delhi/nomad-pizza-traveller-series-jain-mandir-marg-connaught-place-rest590928",
+        "type": "WEBLINK"
+    }
+}

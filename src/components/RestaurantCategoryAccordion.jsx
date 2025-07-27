@@ -5,7 +5,7 @@ const RestaurantCategoryAccordion = ({ data, isDisplay, setShowIndex }) => {
   //   const [isDisplay, setIsDisplay] = useState(false);
   const { title, itemCards } = data;
   return (
-    <div className="w-full shadow-md mb-8 py-2 px-4 rounded-xl bg-gray-100">
+    <div className="w-full shadow-md mb-8 py-2 px-4 rounded-xl bg-gray-100 relative">
       {/* Header */}
       <div onClick={setShowIndex} className="w-full flex justify-between">
         <span className="font-bold cursor-pointer">

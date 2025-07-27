@@ -3,6 +3,7 @@ import { imageCDNUrl } from "../utils/constant";
 
 const RestaurantCard = (props) => {
   const { resData } = props; // props are object
+
   // const { name, cuisines, avgRating, costForTwo, sla } = resData?.info;
 
   // if (!resData || !resData.info) {
@@ -12,6 +13,7 @@ const RestaurantCard = (props) => {
 
   return (
     <div
+      data-testid="resCard"
       className="w-[300px] h-[410px] shadow-xl cursor-pointer bg-[#f0f0f0] p-5 overflow-hidden
     mx-[5px] my-5 rounded-lg transition-all duration-300 hover:scale-110 hover:shadow-lg"
     >
